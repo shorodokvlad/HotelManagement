@@ -4,9 +4,9 @@
 #include <string>
 
 class Data {
-private:
-    int zi, luna, an;
 public:
+    int zi, luna, an;
+
     Data(int z, int l, int a);
     bool esteValida() const;
     bool esteMaiMicaDecat(const Data& other) const;

@@ -3,6 +3,32 @@
 
 using namespace std;
 
+int calculeazaNrNopti(const Data& start, const Data& end) {
+    int zilePeLuna[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    int zile = 0;
+    Data temp = start;
+    while (temp.esteMaiMicaDecat(end)) {
+        bool esteAnBisect = (temp.an % 4 == 0 && (temp.an % 100 != 0 || temp.an % 400 == 0));
+        int maxZile = zilePeLuna[temp.luna];
+        if (temp.luna == 2 && esteAnBisect) maxZile = 29;
+        temp.zi++;
+        if (temp.zi > maxZile) {
+            temp.zi = 1;
+            temp.luna++;
+            if (temp.luna > 12) {
+                temp.luna = 1;
+                temp.an++;
+            }
+        }
+        zile++;
+    }
+    return zile;
+}
+
+double calculeazaPretTotal(int nrNopti, double pretNoapte) {
+    return nrNopti * pretNoapte;
+}
+
 Rezervare::Rezervare(int idR, int idC, int idCa, const Data& ci, const Data& co, StareRezervare s, int nn, double pt)
     : idRezervare(idR), idClient(idC), idCamera(idCa), checkIn(ci), checkOut(co), stare(s), nrNopti(nn), pretTotal(pt) {}
 
