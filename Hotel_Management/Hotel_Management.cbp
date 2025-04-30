@@ -40,11 +40,13 @@
 		<Unit filename="include/Camera.h" />
 		<Unit filename="include/Client.h" />
 		<Unit filename="include/Data.h" />
+		<Unit filename="include/Hotel.h" />
 		<Unit filename="include/Rezervare.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Camera.cpp" />
 		<Unit filename="src/Client.cpp" />
 		<Unit filename="src/Data.cpp" />
+		<Unit filename="src/Hotel.cpp" />
 		<Unit filename="src/Rezervare.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
