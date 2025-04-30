@@ -3,6 +3,7 @@
 
 #include "Client.h"
 #include "Camera.h"
+#include "Rezervare.h"
 #include <vector>
 #include <string>
 
@@ -10,7 +11,10 @@ class Hotel {
 private:
     vector<Client> clienti;
     vector<Camera> camere;
+    vector<Rezervare> rezervari;
+
     int nextClientId;
+    int nextRezervareId;
 
 public:
     Hotel();
@@ -23,6 +27,9 @@ public:
     Camera* obtineCameraDupaNumar(int numarCamera);
     void incarcaCamere();
     void salveazaCamere();
+    void creeazaRezervare(int idClient, int numarCamera, const Data& checkIn, const Data& checkOut);
+    void incarcaRezervari();
+    void salveazaRezervari();
 };
 
 #endif

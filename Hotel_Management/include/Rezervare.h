@@ -1,6 +1,11 @@
+#ifndef REZERVARE_H
+#define REZERVARE_H
+
+
 #include "Data.h"
 #include <string>
 using namespace std;
+
 
 enum class StareRezervare { InAsteptare, Confirmata, CheckIn, CheckOut, Anulata };
 
@@ -36,3 +41,6 @@ public:
     string stareToString() const;
     string toString() const;
 };
+
+
+#endif

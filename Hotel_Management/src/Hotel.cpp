@@ -2,10 +2,11 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include "Data.h"
 
 using namespace std;
 
-Hotel::Hotel() : nextClientId(1) {}
+Hotel::Hotel() : nextClientId(1), nextRezervareId(1) {}
 
 void Hotel::adaugaClient() {
     string nume, prenume, CNP, telefon;
@@ -195,6 +196,111 @@ void Hotel::salveazaCamere() {
         file << room.getNumarCamera() << "," << room.getTipCamera() << "," << room.getPretNoapte() << ","
              << room.getEsteOcupata() << "," << room.getAreAerConditionat() << "," << room.getAreWiFi() << ","
              << room.getAreTV() << "," << room.getAreMinibar() << "\n";
+    }
+    file.close();
+}
+
+void Hotel::creeazaRezervare(int idClient, int numarCamera, const Data& checkIn, const Data& checkOut) {
+    Client* client = obtineClientDupaId(idClient);
+    if (!client) {
+        cout << "Eroare: Clientul cu ID " << idClient << " nu exista." << endl;
+        return;
+    }
+
+    Camera* camera = obtineCameraDupaNumar(numarCamera);
+    if (!camera) {
+        cout << "Eroare: Camera cu numarul " << numarCamera << " nu exista." << endl;
+        return;
+    }
+
+    if (!checkIn.esteValida() || !checkOut.esteValida()) {
+        cout << "Eroare: Datele de check-in sau check-out nu sunt valide." << endl;
+        return;
+    }
+
+    if (!checkIn.esteMaiMicaDecat(checkOut)) {
+        cout << "Eroare: Data de check-out trebuie sa fie mai mare decat data de check-in." << endl;
+        return;
+    }
+
+    int nrNopti = calculeazaNrNopti(checkIn, checkOut);
+    double pretTotal = calculeazaPretTotal(nrNopti, camera->getPretNoapte());
+
+    rezervari.emplace_back(nextRezervareId++, idClient, numarCamera, checkIn, checkOut,
+                           StareRezervare::InAsteptare, nrNopti, pretTotal);
+    salveazaRezervari();
+    cout << "Rezervare creata cu succes! ID: " << rezervari.back().getIdRezervare() << endl;
+}
+
+void Hotel::incarcaRezervari() {
+    ifstream file("data/Rezervari.txt");
+    if (!file.is_open()) {
+        cerr << "Eroare la deschiderea Rezervari.txt" << endl;
+        return;
+    }
+    string line;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string idStr, idClientStr, idCameraStr, checkInZi, checkInLuna, checkInAn,
+               checkOutZi, checkOutLuna, checkOutAn, stareStr, nrNoptiStr, pretTotalStr;
+        getline(ss, idStr, ',');
+        getline(ss, idClientStr, ',');
+        getline(ss, idCameraStr, ',');
+        getline(ss, checkInZi, ',');
+        getline(ss, checkInLuna, ',');
+        getline(ss, checkInAn, ',');
+        getline(ss, checkOutZi, ',');
+        getline(ss, checkOutLuna, ',');
+        getline(ss, checkOutAn, ',');
+        getline(ss, stareStr, ',');
+        getline(ss, nrNoptiStr, ',');
+        getline(ss, pretTotalStr, ',');
+        try {
+            int id = stoi(idStr);
+            int idClient = stoi(idClientStr);
+            int idCamera = stoi(idCameraStr);
+            Data checkIn(stoi(checkInZi), stoi(checkInLuna), stoi(checkInAn));
+            Data checkOut(stoi(checkOutZi), stoi(checkOutLuna), stoi(checkOutAn));
+            StareRezervare stare;
+            int stareInt = stoi(stareStr);
+            switch (stareInt) {
+                case 0: stare = StareRezervare::InAsteptare; break;
+                case 1: stare = StareRezervare::Confirmata; break;
+                case 2: stare = StareRezervare::CheckIn; break;
+                case 3: stare = StareRezervare::CheckOut; break;
+                case 4: stare = StareRezervare::Anulata; break;
+                default: continue;
+            }
+            int nrNopti = stoi(nrNoptiStr);
+            double pretTotal = stod(pretTotalStr);
+            rezervari.emplace_back(id, idClient, idCamera, checkIn, checkOut, stare, nrNopti, pretTotal);
+            if (id >= nextRezervareId) nextRezervareId = id + 1;
+        } catch (const exception& e) {
+            continue;
+        }
+    }
+    file.close();
+}
+
+void Hotel::salveazaRezervari() {
+    ofstream file("data/Rezervari.txt");
+    if (!file.is_open()) {
+        cerr << "Eroare la deschiderea Rezervari.txt" << endl;
+        return;
+    }
+    for (const auto& res : rezervari) {
+        string stareStr;
+        switch (res.getStare()) {
+            case StareRezervare::InAsteptare: stareStr = "InAsteptare"; break;
+            case StareRezervare::Confirmata: stareStr = "Confirmata"; break;
+            case StareRezervare::CheckIn: stareStr = "CheckIn"; break;
+            case StareRezervare::CheckOut: stareStr = "CheckOut"; break;
+            case StareRezervare::Anulata: stareStr = "Anulata"; break;
+        }
+        file << res.getIdRezervare() << "," << res.getIdClient() << "," << res.getIdCamera() << ","
+             << res.getCheckIn().zi << "." << res.getCheckIn().luna << "." << res.getCheckIn().an << ","
+             << res.getCheckOut().zi << "." << res.getCheckOut().luna << "." << res.getCheckOut().an << ","
+             << stareStr << "," << res.getNrNopti() << "," << res.getPretTotal() << "\n";
     }
     file.close();
 }
