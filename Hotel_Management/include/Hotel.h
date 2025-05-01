@@ -4,6 +4,7 @@
 #include "Client.h"
 #include "Camera.h"
 #include "Rezervare.h"
+#include "Data.h"
 #include <vector>
 #include <string>
 
@@ -18,6 +19,8 @@ private:
 
 public:
     Hotel();
+    int calculeazaNrNopti(const Data& checkIn, const Data& checkOut);
+    double calculeazaPretTotal(int nrNopti, double pretNoapte);
     void adaugaClient();
     Client* obtineClientDupaId(int id);
     void incarcaClienti();
@@ -30,6 +33,9 @@ public:
     void creeazaRezervare(int idClient, int numarCamera, const Data& checkIn, const Data& checkOut);
     void incarcaRezervari();
     void salveazaRezervari();
+    void afiseazaClienti();
+    void afiseazaToateCamerele();
+    void afiseazaRezervari();
 };
 
 #endif

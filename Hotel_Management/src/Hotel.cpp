@@ -8,6 +8,29 @@ using namespace std;
 
 Hotel::Hotel() : nextClientId(1), nextRezervareId(1) {}
 
+int Hotel::calculeazaNrNopti(const Data& checkIn, const Data& checkOut) {
+    int zile = 0;
+    Data temp = checkIn;
+    while (temp < checkOut) {
+        int maxZile = temp.getZileInLuna();
+        temp.zi++;
+        if (temp.zi > maxZile) {
+            temp.zi = 1;
+            temp.luna++;
+            if (temp.luna > 12) {
+                temp.luna = 1;
+                temp.an++;
+            }
+        }
+        zile++;
+    }
+    return zile;
+}
+
+double Hotel::calculeazaPretTotal(int nrNopti, double pretNoapte) {
+    return nrNopti * pretNoapte;
+}
+
 void Hotel::adaugaClient() {
     string nume, prenume, CNP, telefon;
     cout << "Introduceti prenumele: ";
@@ -20,11 +43,11 @@ void Hotel::adaugaClient() {
     cout << "Introduceti telefonul: ";
     getline(cin, telefon);
 
-    if (!Client::valideazaTelefon(telefon)) {
-        cout << "Numar de telefon invalid! Trebuie sa aiba 10 cifre si sa inceapa cu 07." << endl;
+    if (!Client::validareTelefon(telefon)) {
+        cout << "Numar de telefon invalid! Trebuie sa aiba 10 cifre." << endl;
         return;
     }
-    if (!Client::valideazaCNP(CNP)) {
+    if (!Client::validareCNP(CNP)) {
         cout << "CNP invalid! Trebuie sa aiba 13 cifre." << endl;
         return;
     }
@@ -218,7 +241,7 @@ void Hotel::creeazaRezervare(int idClient, int numarCamera, const Data& checkIn,
         return;
     }
 
-    if (!checkIn.esteMaiMicaDecat(checkOut)) {
+    if (!(checkIn < checkOut)) {
         cout << "Eroare: Data de check-out trebuie sa fie mai mare decat data de check-in." << endl;
         return;
     }
@@ -298,9 +321,42 @@ void Hotel::salveazaRezervari() {
             case StareRezervare::Anulata: stareStr = "Anulata"; break;
         }
         file << res.getIdRezervare() << "," << res.getIdClient() << "," << res.getIdCamera() << ","
-             << res.getCheckIn().zi << "." << res.getCheckIn().luna << "." << res.getCheckIn().an << ","
-             << res.getCheckOut().zi << "." << res.getCheckOut().luna << "." << res.getCheckOut().an << ","
+             << res.getCheckIn().zi << "," << res.getCheckIn().luna << "," << res.getCheckIn().an << ","
+             << res.getCheckOut().zi << "," << res.getCheckOut().luna << "," << res.getCheckOut().an << ","
              << stareStr << "," << res.getNrNopti() << "," << res.getPretTotal() << "\n";
     }
     file.close();
+}
+
+void Hotel::afiseazaClienti() {
+    if (clienti.empty()) {
+        cout << "Nu exista clienti inregistrati." << endl;
+        return;
+    }
+    cout << "Lista clienti:" << endl;
+    for (const auto& client : clienti) {
+        cout << client.toString() << "----------------" << endl;
+    }
+}
+
+void Hotel::afiseazaToateCamerele() {
+    if (camere.empty()) {
+        cout << "Nu exista camere inregistrate." << endl;
+        return;
+    }
+    cout << "Lista camere:" << endl;
+    for (const auto& camera : camere) {
+        cout << camera.toString() << "----------------" << endl;
+    }
+}
+
+void Hotel::afiseazaRezervari() {
+    if (rezervari.empty()) {
+        cout << "Nu exista rezervari inregistrate." << endl;
+        return;
+    }
+    cout << "Lista rezervari:" << endl;
+    for (const auto& rezervare : rezervari) {
+        cout << rezervare.toString() << "----------------" << endl;
+    }
 }

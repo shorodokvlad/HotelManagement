@@ -4,8 +4,8 @@
 
 using namespace std;
 
-Client::Client(int id, const string& n, const string& p, const string& c, const string& t)
-    : idClient(id), nume(n), prenume(p), CNP(c), telefon(t) {}
+Client::Client(int _idClient, const string& _nume, const string& _prenume, const string& _cnp, const string& _telefon)
+    : idClient(_idClient), nume(_nume), prenume(_prenume), CNP(_cnp), telefon(_telefon) {}
 
 int Client::getIdClient() const { return idClient; }
 string Client::getNume() const { return nume; }
@@ -13,13 +13,13 @@ string Client::getPrenume() const { return prenume; }
 string Client::getCNP() const { return CNP; }
 string Client::getTelefon() const { return telefon; }
 
-bool Client::valideazaTelefon(const string& tel) {
-    if (tel.length() != 10 || tel.substr(0, 2) != "07") return false;
-    for (char c : tel) if (!isdigit(c)) return false;
+bool Client::validareTelefon(const string& telefon) {
+    if (telefon.length() != 10 ) return false;
+    for (char c : telefon) if (!isdigit(c)) return false;
     return true;
 }
 
-bool Client::valideazaCNP(const string& cnp) {
+bool Client::validareCNP(const string& cnp) {
     if (cnp.length() != 13) return false;
     for (char c : cnp) if (!isdigit(c)) return false;
     return true;

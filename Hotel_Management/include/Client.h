@@ -12,14 +12,14 @@ private:
     string CNP;
     string telefon;
 public:
-    Client(int id, const string& n, const string& p, const string& c, const string& t);
+    Client(int _idClient, const string& _nume, const string& _prenume, const string& _cnp, const string& _telefon);
     int getIdClient() const;
     string getNume() const;
     string getPrenume() const;
     string getCNP() const;
     string getTelefon() const;
-    static bool valideazaTelefon(const string& tel);
-    static bool valideazaCNP(const string& cnp);
+    static bool validareTelefon(const string& telefon);
+    static bool validareCNP(const string& cnp);
     string toString() const;
 };
 

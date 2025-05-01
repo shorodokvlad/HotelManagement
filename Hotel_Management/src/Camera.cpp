@@ -3,20 +3,21 @@
 
 using namespace std;
 
-Camera::Camera(int nc, const string& tc, double pn, bool eo, bool ac, bool w, bool tv, bool mb)
-    : numarCamera(nc), tipCamera(tc), pretNoapte(pn), esteOcupata(eo),
-      areAerConditionat(ac), areWiFi(w), areTV(tv), areMinibar(mb) {}
+Camera::Camera(int _nrCamera, const string& _tipCamera, double _pretNoate, bool _esteOcupata, bool _areAC,
+                bool _areWifi, bool _areTV, bool _areMiniBar)
+    : numarCamera(_nrCamera), tipCamera(_tipCamera), pretNoapte(_pretNoate), esteOcupata(_esteOcupata),
+      areAerConditionat(_areAC), areWiFi(_areWifi), areTV(_areTV), areMinibar(_areMiniBar) {}
 
 int Camera::getNumarCamera() const { return numarCamera; }
 string Camera::getTipCamera() const { return tipCamera; }
 double Camera::getPretNoapte() const { return pretNoapte; }
 bool Camera::getEsteOcupata() const { return esteOcupata; }
-void Camera::seteazaOcupata(bool status) { esteOcupata = status; }
-
 bool Camera::getAreAerConditionat() const { return areAerConditionat; }
 bool Camera::getAreWiFi() const { return areWiFi; }
 bool Camera::getAreTV() const { return areTV; }
 bool Camera::getAreMinibar() const { return areMinibar; }
+
+void Camera::setOcupata(bool status) { esteOcupata = status; }
 
 string Camera::toString() const {
     return "Numar Camera: " + to_string(numarCamera) + "\n" +

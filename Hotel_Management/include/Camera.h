@@ -16,12 +16,12 @@ private:
     bool areTV;
     bool areMinibar;
 public:
-    Camera(int nc, const string& tc, double pn, bool eo, bool ac, bool w, bool tv, bool mb);
+    Camera(int _nrCamera, const string& _tipCamera, double _pretNoate, bool _esteOcupata, bool _areAC, bool _areWifi, bool _areTV, bool _areMiniBar);
     int getNumarCamera() const;
     string getTipCamera() const;
     double getPretNoapte() const;
     bool getEsteOcupata() const;
-    void seteazaOcupata(bool status);
+    void setOcupata(bool status);
     bool getAreAerConditionat() const;
     bool getAreWiFi() const;
     bool getAreTV() const;
