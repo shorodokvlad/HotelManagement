@@ -54,5 +54,13 @@ int main() {
     cout << "Rezervari dupa incarcare:" << endl;
     hotel.afiseazaRezervari();
 
+    cout << "Test afiseazaCamereLibere:" << endl;
+    hotel.afiseazaCamereLibere();
+    cout << endl;
+
+    cout << "Test afiseazaCamereOcupate:" << endl;
+    hotel.afiseazaCamereOcupate();
+    cout << endl;
+
     return 0;
 }

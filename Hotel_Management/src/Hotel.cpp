@@ -1,7 +1,9 @@
-#include "Hotel.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
+
+#include "Hotel.h"
 #include "Data.h"
 
 using namespace std;
@@ -29,6 +31,12 @@ int Hotel::calculeazaNrNopti(const Data& checkIn, const Data& checkOut) {
 
 double Hotel::calculeazaPretTotal(int nrNopti, double pretNoapte) {
     return nrNopti * pretNoapte;
+}
+
+Data Hotel::citesteData() {
+    int zi, luna, an;
+    scanf("%d.%d.%d", &zi, &luna, &an);
+    return Data(zi, luna, an);
 }
 
 void Hotel::adaugaClient() {
@@ -66,6 +74,17 @@ Client* Hotel::obtineClientDupaId(int id) {
         if (client.getIdClient() == id) return &client;
     }
     return nullptr;
+}
+
+bool Hotel::areRezervareSuprapusa(int numarCamera, const Data& checkIn, const Data& checkOut) const {
+    for (const auto& res : rezervari) {
+        if (res.getIdCamera() == numarCamera && res.getStare() != StareRezervare::Anulata && res.getStare() != StareRezervare::CheckOut) {
+            if (checkIn < res.getCheckOut() && res.getCheckIn() < checkOut) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void Hotel::incarcaClienti() {
@@ -358,5 +377,79 @@ void Hotel::afiseazaRezervari() {
     cout << "Lista rezervari:" << endl;
     for (const auto& rezervare : rezervari) {
         cout << rezervare.toString() << "----------------" << endl;
+    }
+}
+void Hotel::afiseazaCamereLibere() {
+    cout << "Introduceti data de inceput(DD.MM.YYYY): ";
+    Data startData = citesteData();
+    cout << "Introduceti data de sfarsit(DD.MM.YYYY): ";
+    Data endData = citesteData();
+
+    if (!startData.esteValida() || !endData.esteValida() || !(startData < endData)) {
+        cout << "Eroare: Interval de date invalid." << endl;
+        return;
+    }
+
+    system("cls");
+    bool found = false;
+
+    cout << "Camere libere in perioada " << startData.toString() << " - " << endData.toString() << ":" << endl;
+    cout << "\n";
+    cout << left << setw(8) << "Numar" << setw(12) << "Tip" << setw(14) << "Pret/noapte" << setw(8) << "WiFi" << setw(6) << "TV" << setw(9) << "Minibar" << setw(10) << "AerCond." << endl;
+    cout << string(67, '-') << endl;
+
+    for (const auto& room : camere) {
+        if (!areRezervareSuprapusa(room.getNumarCamera(), startData, endData)) {
+            cout << left << setw(8) << room.getNumarCamera()
+                 << setw(12) << room.getTipCamera()
+                 << setw(14) << room.getPretNoapte()
+                 << setw(8) << (room.getAreWiFi() ? "Da" : "Nu")
+                 << setw(6) << (room.getAreTV() ? "Da" : "Nu")
+                 << setw(9) << (room.getAreMinibar() ? "Da" : "Nu")
+                 << setw(10) << (room.getAreAerConditionat() ? "Da" : "Nu") << endl;
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "Nu exista camere libere in perioada specificata.\n";
+    }
+}
+
+
+void Hotel::afiseazaCamereOcupate() {
+    cout << "Introduceti data de inceput(DD.MM.YYYY): ";
+    Data startData = citesteData();
+    cout << "Introduceti data de sfarsit(DD.MM.YYYY): ";
+    Data endData = citesteData();
+
+    if (!startData.esteValida() || !endData.esteValida() || !(startData < endData)) {
+        cout << "Eroare: Interval de date invalid." << endl;
+        return;
+    }
+
+    system("cls");
+    bool found = false;
+
+    cout << "Camere ocupate in perioada " << startData.toString() << " - " << endData.toString() << ":" << endl;
+    cout << "\n";
+    cout << left << setw(8) << "Numar" << setw(12) << "Tip" << setw(14) << "Pret/noapte" << setw(8) << "WiFi" << setw(6) << "TV" << setw(9) << "Minibar" << setw(10) << "AerCond." << endl;
+    cout << string(67, '-') << endl;
+
+    for (const auto& room : camere) {
+        if (areRezervareSuprapusa(room.getNumarCamera(), startData, endData)) {
+            cout << left << setw(8) << room.getNumarCamera()
+                 << setw(12) << room.getTipCamera()
+                 << setw(14) << room.getPretNoapte()
+                 << setw(8) << (room.getAreWiFi() ? "Da" : "Nu")
+                 << setw(6) << (room.getAreTV() ? "Da" : "Nu")
+                 << setw(9) << (room.getAreMinibar() ? "Da" : "Nu")
+                 << setw(10) << (room.getAreAerConditionat() ? "Da" : "Nu") << endl;
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "Nu exista camere ocupate in perioada specificata.\n";
     }
 }

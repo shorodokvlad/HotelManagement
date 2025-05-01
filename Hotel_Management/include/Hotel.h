@@ -17,25 +17,31 @@ private:
     int nextClientId;
     int nextRezervareId;
 
+    bool areRezervareSuprapusa(int numarCamera, const Data& checkIn, const Data& checkOut) const;
+
+
 public:
     Hotel();
+    Data citesteData();
     int calculeazaNrNopti(const Data& checkIn, const Data& checkOut);
     double calculeazaPretTotal(int nrNopti, double pretNoapte);
-    void adaugaClient();
     Client* obtineClientDupaId(int id);
+    Camera* obtineCameraDupaNumar(int numarCamera);
     void incarcaClienti();
     void salveazaClienti();
-    void adaugaCamera(int numarCamera, const string& tipCamera, double pretNoapte,
-                     bool areAerConditionat, bool areWiFi, bool areTV, bool areMinibar);
-    Camera* obtineCameraDupaNumar(int numarCamera);
     void incarcaCamere();
     void salveazaCamere();
-    void creeazaRezervare(int idClient, int numarCamera, const Data& checkIn, const Data& checkOut);
     void incarcaRezervari();
     void salveazaRezervari();
+    void adaugaClient();
+    void adaugaCamera(int numarCamera, const string& tipCamera, double pretNoapte,
+                     bool areAerConditionat, bool areWiFi, bool areTV, bool areMinibar);
+    void creeazaRezervare(int idClient, int numarCamera, const Data& checkIn, const Data& checkOut);
     void afiseazaClienti();
     void afiseazaToateCamerele();
     void afiseazaRezervari();
+    void afiseazaCamereLibere();
+    void afiseazaCamereOcupate();
 };
 
 #endif
