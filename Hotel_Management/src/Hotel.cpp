@@ -68,6 +68,11 @@ void Hotel::adaugaClient() {
         cout << "Eroare: " << e.what() << endl;
     }
 }
+void Hotel::salveazaDate() {
+    salveazaClienti();
+    salveazaCamere();
+    salveazaRezervari();
+}
 
 Client* Hotel::obtineClientDupaId(int id) {
     for (auto& client : clienti) {
@@ -452,4 +457,82 @@ void Hotel::afiseazaCamereOcupate() {
     if (!found) {
         cout << "Nu exista camere ocupate in perioada specificata.\n";
     }
+}
+
+void Hotel::gestioneazaRezervare(int idRezervare, StareRezervare nouaStare) {
+    for (auto& rezervare : rezervari) {
+        if (rezervare.getIdRezervare() == idRezervare) {
+            switch (nouaStare) {
+                case StareRezervare::Confirmata:
+                    if (rezervare.getStare() == StareRezervare::InAsteptare) {
+                        rezervare.setStare(StareRezervare::Confirmata);
+                        salveazaDate();
+                        cout << "Rezervare confirmata cu succes!" << endl;
+                    } else {
+                        cout << "Rezervarea nu este in stare InAsteptare." << endl;
+                    }
+                    break;
+                case StareRezervare::Anulata:
+                    if (rezervare.getStare() != StareRezervare::Anulata && rezervare.getStare() != StareRezervare::CheckOut) {
+                        rezervare.setStare(StareRezervare::Anulata);
+                        Camera* camera = obtineCameraDupaNumar(rezervare.getIdCamera());
+                        if (camera) {
+                            bool esteIncaOcupata = false;
+                            for (const auto& altaRezervare : rezervari) {
+                                if (altaRezervare.getIdCamera() == rezervare.getIdCamera() && altaRezervare.getIdRezervare() != idRezervare &&
+                                    altaRezervare.getStare() != StareRezervare::Anulata && altaRezervare.getStare() != StareRezervare::CheckOut) {
+                                    esteIncaOcupata = true;
+                                    break;
+                                }
+                            }
+                            if (!esteIncaOcupata) {
+                                camera->setOcupata(false);
+                            }
+                        }
+                        salveazaDate();
+                        cout << "Rezervare anulata cu succes!" << endl;
+                    } else {
+                        cout << "Rezervarea este deja anulata sau finalizata." << endl;
+                    }
+                    break;
+                case StareRezervare::CheckIn:
+                    if (rezervare.getStare() == StareRezervare::Confirmata) {
+                        rezervare.setStare(StareRezervare::CheckIn);
+                        salveazaDate();
+                        cout << "Check-in realizat cu succes!" << endl;
+                    } else {
+                        cout << "Rezervarea nu este in stare Confirmata." << endl;
+                    }
+                    break;
+                case StareRezervare::CheckOut:
+                    if (rezervare.getStare() == StareRezervare::CheckIn) {
+                        rezervare.setStare(StareRezervare::CheckOut);
+                        Camera* camera = obtineCameraDupaNumar(rezervare.getIdCamera());
+                        if (camera) {
+                            bool esteIncaOcupata = false;
+                            for (const auto& altaRezervare : rezervari) {
+                                if (altaRezervare.getIdCamera() == rezervare.getIdCamera() && altaRezervare.getIdRezervare() != idRezervare &&
+                                    altaRezervare.getStare() != StareRezervare::Anulata && altaRezervare.getStare() != StareRezervare::CheckOut) {
+                                    esteIncaOcupata = true;
+                                    break;
+                                }
+                            }
+                            if (!esteIncaOcupata) {
+                                camera->setOcupata(false);
+                            }
+                        }
+                        salveazaDate();
+                        cout << "Check-out realizat cu succes!" << endl;
+                    } else {
+                        cout << "Rezervarea nu este in stare CheckIn." << endl;
+                    }
+                    break;
+                default:
+                    cout << "Stare invalida." << endl;
+                    break;
+            }
+            return;
+        }
+    }
+    cout << "Rezervare cu ID-ul " << idRezervare << " nu a fost gasita." << endl;
 }

@@ -26,6 +26,7 @@ public:
     bool getAreWiFi() const;
     bool getAreTV() const;
     bool getAreMinibar() const;
+
     string toString() const;
 };
 

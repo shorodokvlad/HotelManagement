@@ -55,11 +55,17 @@ int main() {
     hotel.afiseazaRezervari();
 
     cout << "Test afiseazaCamereLibere:" << endl;
-    hotel.afiseazaCamereLibere();
+    //hotel.afiseazaCamereLibere();
     cout << endl;
 
     cout << "Test afiseazaCamereOcupate:" << endl;
-    hotel.afiseazaCamereOcupate();
+    //hotel.afiseazaCamereOcupate();
+    cout << endl;
+
+    cout << "Test gestioneazaRezervare:" << endl;
+    hotel.gestioneazaRezervare(1, StareRezervare::Confirmata); // Confirmă rezervarea
+    hotel.gestioneazaRezervare(1, StareRezervare::CheckIn);    // Check-in
+    hotel.gestioneazaRezervare(1, StareRezervare::CheckOut);   // Check-out
     cout << endl;
 
     return 0;

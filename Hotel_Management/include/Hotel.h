@@ -34,6 +34,7 @@ public:
     void incarcaRezervari();
     void salveazaRezervari();
     void adaugaClient();
+    void salveazaDate();
     void adaugaCamera(int numarCamera, const string& tipCamera, double pretNoapte,
                      bool areAerConditionat, bool areWiFi, bool areTV, bool areMinibar);
     void creeazaRezervare(int idClient, int numarCamera, const Data& checkIn, const Data& checkOut);
@@ -42,6 +43,7 @@ public:
     void afiseazaRezervari();
     void afiseazaCamereLibere();
     void afiseazaCamereOcupate();
+    void gestioneazaRezervare(int idRezervare, StareRezervare nouaStare);
 };
 
 #endif
