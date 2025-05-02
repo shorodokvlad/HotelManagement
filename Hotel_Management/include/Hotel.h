@@ -44,6 +44,7 @@ public:
     void afiseazaCamereLibere();
     void afiseazaCamereOcupate();
     void gestioneazaRezervare(int idRezervare, StareRezervare nouaStare);
+    void modificaRezervare(int idRezervare, int idClient, int numarCamera, const Data& checkIn, const Data& checkOut);
 };
 
 #endif

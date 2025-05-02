@@ -29,6 +29,8 @@ public:
     StareRezervare getStare() const;
     int getNrNopti() const;
     double getPretTotal() const;
+    void setIdClient(int id);
+    void setIdCamera(int id);
     void setStare(StareRezervare _stare);
     void setCheckIn(const Data& _checkIn);
     void setCheckOut(const Data& _checkOut);

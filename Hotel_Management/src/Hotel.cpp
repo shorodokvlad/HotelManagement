@@ -536,3 +536,71 @@ void Hotel::gestioneazaRezervare(int idRezervare, StareRezervare nouaStare) {
     }
     cout << "Rezervare cu ID-ul " << idRezervare << " nu a fost gasita." << endl;
 }
+
+
+void Hotel::modificaRezervare(int idRezervare, int idClient, int numarCamera, const Data& checkIn, const Data& checkOut) {
+    for (auto& rezervare : rezervari) {
+        if (rezervare.getIdRezervare() == idRezervare) {
+            // Verificăm dacă rezervarea este într-o stare modificabilă
+            if (rezervare.getStare() != StareRezervare::InAsteptare && rezervare.getStare() != StareRezervare::Confirmata) {
+                cout << "Eroare: Rezervarea nu poate fi modificata." << endl;
+                return;
+            }
+
+            // Verificăm clientul
+            Client* client = obtineClientDupaId(idClient);
+            if (!client) {
+                cout << "Eroare: Clientul cu ID " << idClient << " nu exista." << endl;
+                return;
+            }
+
+            // Verificăm camera
+            Camera* camera = obtineCameraDupaNumar(numarCamera);
+            if (!camera) {
+                cout << "Eroare: Camera cu numarul " << numarCamera << " nu exista." << endl;
+                return;
+            }
+
+            // Verificăm validitatea datelor
+            if (!checkIn.esteValida() || !checkOut.esteValida()) {
+                cout << "Eroare: Datele de check-in sau check-out nu sunt valide." << endl;
+                return;
+            }
+
+            if (!(checkIn < checkOut)) {
+                cout << "Eroare: Data de check-out trebuie sa fie mai mare decat data de check-in." << endl;
+                return;
+            }
+
+            // Verificăm suprapunerile (excluzând rezervarea curentă)
+            for (const auto& altaRezervare : rezervari) {
+                if (altaRezervare.getIdRezervare() != idRezervare &&
+                    altaRezervare.getIdCamera() == numarCamera &&
+                    altaRezervare.getStare() != StareRezervare::Anulata &&
+                    altaRezervare.getStare() != StareRezervare::CheckOut) {
+                    if (checkIn < altaRezervare.getCheckOut() && altaRezervare.getCheckIn() < checkOut) {
+                        cout << "Eroare: Camera este deja rezervata in acest interval." << endl;
+                        return;
+                    }
+                }
+            }
+
+            // Calculăm noile valori
+            int nrNopti = calculeazaNrNopti(checkIn, checkOut);
+            double pretTotal = calculeazaPretTotal(nrNopti, camera->getPretNoapte());
+
+            // Actualizăm rezervarea
+            rezervare.setIdClient(idClient);
+            rezervare.setIdCamera(numarCamera);
+            rezervare.setCheckIn(checkIn);
+            rezervare.setCheckOut(checkOut);
+            rezervare.setNrNopti(nrNopti);
+            rezervare.setPretTotal(pretTotal);
+
+            salveazaDate();
+            cout << "Rezervarea " << idRezervare << " a fost modificata cu succes!" << endl;
+            return;
+        }
+    }
+    cout << "Eroare: Rezervarea cu ID " << idRezervare << " nu a fost gasita." << endl;
+}

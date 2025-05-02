@@ -16,6 +16,8 @@ StareRezervare Rezervare::getStare() const { return stare; }
 int Rezervare::getNrNopti() const { return nrNopti; }
 double Rezervare::getPretTotal() const { return pretTotal; }
 
+void Rezervare::setIdClient(int id) { idClient = id; };
+void Rezervare::setIdCamera(int id) { idCamera = id; };
 void Rezervare::setStare(StareRezervare _stare) { stare = _stare; }
 void Rezervare::setCheckIn(const Data& _checkIn) { checkIn = _checkIn; }
 void Rezervare::setCheckOut(const Data& _checkOut) { checkOut = _checkOut; }

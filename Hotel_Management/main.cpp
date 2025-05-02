@@ -64,8 +64,13 @@ int main() {
 
     cout << "Test gestioneazaRezervare:" << endl;
     hotel.gestioneazaRezervare(1, StareRezervare::Confirmata); // Confirmă rezervarea
-    hotel.gestioneazaRezervare(1, StareRezervare::CheckIn);    // Check-in
-    hotel.gestioneazaRezervare(1, StareRezervare::CheckOut);   // Check-out
+    //hotel.gestioneazaRezervare(1, StareRezervare::CheckIn);    // Check-in
+    //hotel.gestioneazaRezervare(1, StareRezervare::CheckOut);   // Check-out
+    cout << endl;
+
+    cout << "Test modificaRezervare:" << endl;
+    hotel.modificaRezervare(1, 1, 101, Data(2, 5, 2025), Data(4, 5, 2025));
+    hotel.afiseazaRezervari();
     cout << endl;
 
     return 0;
