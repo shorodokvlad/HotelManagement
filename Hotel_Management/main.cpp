@@ -1,77 +1,173 @@
-#include "Hotel.h"
-#include "Camera.h"
-#include "Rezervare.h"
-#include "Client.h"
 #include <iostream>
-#include <fstream>
+#include "Hotel.h"
 
 using namespace std;
 
 int main() {
     Hotel hotel;
+    hotel.incarcaDate();
+    int optiune, optiuneReceptioner, optiuneAdministrator;
 
-    // Încărcăm clienții și camerele din fișiere
-    cout << "Test incarcaClienti:" << endl;
-    hotel.incarcaClienti();
-    if (hotel.obtineClientDupaId(1) == nullptr) {
-        cout << "Eroare: Nu exista client cu ID 1 in Clienti.txt" << endl;
-        return 1;
-    }
-    cout << "Clienti incarcati cu succes." << endl;
-    cout << endl;
+    do {
+        cout << "=============================" << endl;
+        cout << "      HOTEL Management       " << endl;
+        cout << "=============================" << endl;
+        cout << "1. Intra ca Receptioner" << endl;
+        cout << "2. Intra ca Administrator" << endl;
+        cout << "0. Iesire" << endl;
+        cout << "Alege o optiune: ";
+        cin >> optiune;
 
-    cout << "Test incarcaCamere:" << endl;
-    hotel.incarcaCamere();
-    if (hotel.obtineCameraDupaNumar(101) == nullptr) {
-        cout << "Eroare: Nu exista camera cu numarul 101 in Camere.txt" << endl;
-        return 1;
-    }
-    cout << "Camere incarcate cu succes." << endl;
-    cout << endl;
+        switch (optiune) {
+            case 1: {
+                system("cls");
+                do {
+                    cout << "\nMeniu Receptioner:" << endl;
+                    cout << "1. Adauga client" << endl;
+                    cout << "2. Afiseaza clienti" << endl;
+                    cout << "3. Afiseaza camere libere" << endl;
+                    cout << "4. Afiseaza camere ocupate" << endl;
+                    cout << "5. Gestionare rezervari" << endl;
+                    cout << "0. Iesire" << endl;
+                    cout << "Alege o optiune: ";
+                    cin >> optiuneReceptioner;
 
-    // Testăm crearea rezervării
-    cout << "Test creeazaRezervare:" << endl;
-    hotel.creeazaRezervare(1, 101, Data(1, 5, 2025), Data(3, 5, 2025));
-    cout << endl;
+                    switch (optiuneReceptioner) {
+                        case 1: {
+                            system("cls");
+                            hotel.adaugaClient();
+                            break;
+                        }
+                        case 2: {
+                            system("cls");
+                            hotel.afiseazaClienti();
+                            break;
+                        }
+                        case 3: {
+                            system("cls");
+                            hotel.afiseazaCamereLibere();
+                            break;
+                        }
+                        case 4: {
+                            system("cls");
+                            hotel.afiseazaCamereOcupate();
+                            break;
+                        }
+                        case 5: {
+                            system("cls");
+                            int optiuneRezervare;
+                            do {
+                                cout << "\nGestionare rezervari:" << endl;
+                                cout << "1. Adaugare rezervare" << endl;
+                                cout << "2. Vizualizare rezervari" << endl;
+                                cout << "3. Confirmare rezervare" << endl;
+                                cout << "4. Check-in" << endl;
+                                cout << "5. Check-out" << endl;
+                                cout << "6. Anulare rezervare" << endl;
+                                cout << "7. Modificare rezervare" << endl;
+                                cout << "0. Inapoi" << endl;
+                                cout << "Alege o optiune: ";
+                                cin >> optiuneRezervare;
 
-    // Testăm metodele de afișare
-    cout << "Test afiseazaClienti:" << endl;
-    hotel.afiseazaClienti();
-    cout << endl;
+                                switch (optiuneRezervare) {
+                                    case 1: {
+                                        system("cls");
+                                        hotel.adaugaRezervare();
+                                        break;
+                                    }
+                                    case 2: {
+                                        system("cls");
+                                        hotel.afiseazaRezervari();
+                                        break;
+                                    }
+                                    case 3: {
+                                        system("cls");
+                                        hotel.modificaStareRezervare(StareRezervare::Confirmata);
+                                        break;
+                                    }
+                                    case 4: {
+                                        system("cls");
+                                        hotel.modificaStareRezervare(StareRezervare::CheckIn);
+                                        break;
+                                    }
+                                    case 5: {
+                                        system("cls");
+                                        hotel.modificaStareRezervare(StareRezervare::CheckOut);
+                                        break;
+                                    }
+                                    case 6: {
+                                        system("cls");
+                                        hotel.modificaStareRezervare(StareRezervare::Anulata);
+                                        break;
+                                    }
+                                    case 7: {
+                                        system("cls");
+                                        hotel.modificaRezervare();
+                                        break;
+                                    }
+                                    case 0: {
+                                        system("cls");
+                                        break;
+                                    }
+                                    default: {
+                                        cout << "\nOptiune invalida! Incearca din nou." << endl;
+                                    }
+                                }
+                            } while (optiuneRezervare != 0);
+                            break;
+                        }
+                        case 0: {
+                            system("cls");
+                            break;
+                        }
+                        default: {
+                            cout << "\nOptiune invalida! Incearca din nou." << endl;
+                        }
+                    }
+                } while (optiuneReceptioner != 0);
+                break;
+            }
+            case 2: {
+                system("cls");
+                do {
+                    cout << "\nMeniu Administrator:" << endl;
+                    cout << "1. Adauga camera" << endl;
+                    cout << "2. Afiseaza toate camerele" << endl;
+                    cout << "0. Iesire" << endl;
+                    cout << "Alege o optiune: ";
+                    cin >> optiuneAdministrator;
 
-    cout << "Test afiseazaToateCamerele:" << endl;
-    hotel.afiseazaToateCamerele();
-    cout << endl;
-
-    cout << "Test afiseazaRezervari:" << endl;
-    hotel.afiseazaRezervari();
-    cout << endl;
-
-    // Testăm salvarea și încărcarea rezervărilor
-    cout << "Test salveazaRezervari si incarcaRezervari:" << endl;
-    hotel.salveazaRezervari();
-    hotel.incarcaRezervari();
-    cout << "Rezervari dupa incarcare:" << endl;
-    hotel.afiseazaRezervari();
-
-    cout << "Test afiseazaCamereLibere:" << endl;
-    //hotel.afiseazaCamereLibere();
-    cout << endl;
-
-    cout << "Test afiseazaCamereOcupate:" << endl;
-    //hotel.afiseazaCamereOcupate();
-    cout << endl;
-
-    cout << "Test gestioneazaRezervare:" << endl;
-    hotel.gestioneazaRezervare(1, StareRezervare::Confirmata); // Confirmă rezervarea
-    //hotel.gestioneazaRezervare(1, StareRezervare::CheckIn);    // Check-in
-    //hotel.gestioneazaRezervare(1, StareRezervare::CheckOut);   // Check-out
-    cout << endl;
-
-    cout << "Test modificaRezervare:" << endl;
-    hotel.modificaRezervare(1, 1, 101, Data(2, 5, 2025), Data(4, 5, 2025));
-    hotel.afiseazaRezervari();
-    cout << endl;
+                    switch (optiuneAdministrator) {
+                        case 1:
+                            system("cls");
+                            hotel.adaugaCamera();
+                            break;
+                        case 2:
+                            system("cls");
+                            hotel.afiseazaToateCamerele();
+                            break;
+                        case 0:
+                            system("cls");
+                            break;
+                        default: {
+                            cout << "\nOptiune invalida! Incearca din nou." << endl;
+                        }
+                    }
+                } while (optiuneAdministrator != 0);
+                break;
+            }
+            case 0: {
+                system("cls");
+                hotel.salveazaDate();
+                cout << "\nIesire din program. La revedere!" << endl;
+                break;
+            }
+            default: {
+                cout << "\nOptiune invalida! Incearca din nou." << endl;
+            }
+        }
+        cout << "\n";
+    } while (optiune != 0);
 
     return 0;
 }
