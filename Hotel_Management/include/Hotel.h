@@ -13,8 +13,8 @@ private:
     vector<Client> clienti;
     vector<Camera> camere;
     vector<Rezervare> rezervari;
-    int nextClientId;
-    int nextRezervareId;
+    static int nextClientId;
+    static int nextRezervareId;
 
     Client* getClientDupaId(int id);
     Camera* getCameraDupaNumar(int numarCamera);

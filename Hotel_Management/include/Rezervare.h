@@ -5,8 +5,13 @@
 #include <string>
 using namespace std;
 
-
-enum class StareRezervare { InAsteptare, Confirmata, CheckIn, CheckOut, Anulata };
+enum class StareRezervare {
+    InAsteptare,
+    Confirmata,
+    CheckIn,
+    CheckOut,
+    Anulata
+};
 
 class Rezervare {
 private:
@@ -20,6 +25,7 @@ private:
     double pretTotal;
 
 public:
+    Rezervare() : idRezervare(0), idClient(0), idCamera(0), checkIn(), checkOut(), stare(StareRezervare::InAsteptare), nrNopti(0), pretTotal(0.0) {}
     Rezervare(int _idRezervare, int _idClient, int _idCamera, const Data& _checkIn, const Data& _checkOut, StareRezervare _stare, int _nrNopti, double _pretTotal);
     int getIdRezervare() const;
     int getIdClient() const;
@@ -39,6 +45,8 @@ public:
 
     string stareToString() const;
     string toString() const;
+    friend ostream& operator<<(ostream& out, const Rezervare& rezervare);
+    friend istream& operator>>(istream& in, Rezervare& rezervare);
 };
 
 

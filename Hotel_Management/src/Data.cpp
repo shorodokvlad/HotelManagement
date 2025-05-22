@@ -1,7 +1,9 @@
 #include "Data.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
+
 
 Data::Data(int _zi, int _luna, int _an) : zi(_zi), luna(_luna), an(_an) {}
 
@@ -20,14 +22,18 @@ bool Data::operator<(const Data& other) const {
 
 }
 
-int Data::getZileInLuna() const {
-    int zilePeLuna[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    if (luna == 2 && ((an % 4 == 0 && an % 100 != 0) || an % 400 == 0))
-        return 29; // An bisect
-    return zilePeLuna[luna - 1];
-}
-
-
 string Data::toString() const {
     return to_string(zi) + "." + to_string(luna) + "." + to_string(an);
 }
+
+ostream& operator<<(ostream& out, const Data& data) {
+    out << data.toString();
+    return out;
+}
+
+istream& operator>>(istream& in, Data& data) {
+    scanf("%d.%d.%d", &data.zi, &data.luna, &data.an);
+
+    return in;
+}
+

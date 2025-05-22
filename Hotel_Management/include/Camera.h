@@ -16,6 +16,7 @@ private:
     bool areTV;
     bool areMinibar;
 public:
+    Camera() : numarCamera(0), tipCamera(""), pretNoapte(0.0), esteOcupata(false), areAerConditionat(false), areWiFi(false), areTV(false), areMinibar(false) {}
     Camera(int _nrCamera, const string& _tipCamera, double _pretNoate, bool _esteOcupata, bool _areAC, bool _areWifi, bool _areTV, bool _areMiniBar);
     int getNumarCamera() const;
     string getTipCamera() const;
@@ -28,6 +29,10 @@ public:
     bool getAreMinibar() const;
 
     string toString() const;
+
+    friend ostream& operator<<(ostream& out, const Camera& camera);
+    friend istream& operator>>(istream& in, Camera& camera);
+
 };
 
 #endif

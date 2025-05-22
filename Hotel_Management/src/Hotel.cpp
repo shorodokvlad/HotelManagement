@@ -1,18 +1,34 @@
 #include "Hotel.h"
 #include <fstream>
 #include <iomanip>
-#include <iostream>
 #include <filesystem>
+#include <conio.h>
 
 using namespace std;
 
-Hotel::Hotel() : nextClientId(1), nextRezervareId(1) {}
+int Hotel::nextClientId = 1;
+int Hotel::nextRezervareId = 1;
+
+Hotel::Hotel() {}
 
 int Hotel::calculeazaNrNopti(const Data& checkIn, const Data& checkOut) {
     int zile = 0;
     Data temp = checkIn;
+
     while (temp < checkOut) {
-        int maxZile = temp.getZileInLuna();
+        int maxZile;
+
+        if (temp.luna == 2) {
+            if ((temp.an % 4 == 0 && temp.an % 100 != 0) || (temp.an % 400 == 0))
+                maxZile = 29;
+            else
+                maxZile = 28;
+        } else if ((temp.luna <= 7 && temp.luna % 2 == 1) || (temp.luna >= 8 && temp.luna % 2 == 0)) {
+            maxZile = 31;
+        } else {
+            maxZile = 30;
+        }
+
         temp.zi++;
         if (temp.zi > maxZile) {
             temp.zi = 1;
@@ -24,6 +40,7 @@ int Hotel::calculeazaNrNopti(const Data& checkIn, const Data& checkOut) {
         }
         zile++;
     }
+
     return zile;
 }
 
@@ -32,46 +49,26 @@ double Hotel::calculeazaPretTotal(int nrNopti, double pretNoapte) {
 }
 
 Data Hotel::citesteData() {
-    int zi, luna, an;
-    scanf("%d.%d.%d", &zi, &luna, &an);
-    return Data(zi, luna, an);
+    Data data;
+    cin >> data;
+    return data;
 }
 
 void Hotel::adaugaClient() {
-    string nume, prenume, CNP, telefon;
-    cout << "Introduceti prenumele: ";
-    getchar();
-    getline(cin, prenume);
-    cout << "Introduceti numele: ";
-    getline(cin, nume);
-    cout << "Introduceti CNP-ul: ";
-    getline(cin, CNP);
-    cout << "Introduceti telefonul: ";
-    getline(cin, telefon);
+    Client client;
+    cin >> client;
 
-    if (!Client::validareTelefon(telefon)) {
-        cout << "Numar de telefon invalid! Trebuie sa aiba 10 cifre." << endl;
-        return;
-    }
-    if (!Client::validareCNP(CNP)) {
-        cout << "CNP invalid! Trebuie sa aiba 13 cifre." << endl;
-        return;
-    }
-
-    for (const auto& client : clienti) {
-        if (client.getCNP() == CNP) {
-            cout << "Eroare: Exista deja un client cu acest CNP. ID: " << client.getIdClient() << endl;
+    for (const auto& c : clienti) {
+        if (c.getCNP() == client.getCNP()) {
+            cout << "Eroare: Exista deja un client cu acest CNP. ID: " << c.getIdClient() << endl;
             return;
         }
     }
 
-    try {
-        clienti.emplace_back(nextClientId++, nume, prenume, CNP, telefon);
-        salveazaDate();
-        cout << "Client adaugat cu succes! ID: " << clienti.back().getIdClient() << endl;
-    } catch (const invalid_argument& e) {
-        cout << "Eroare: " << e.what() << endl;
-    }
+    client.setIdClient(nextClientId++);
+    clienti.push_back(client);
+    salveazaDate();
+    cout << "Client adaugat cu succes! ID: " << client.getIdClient() << endl;
 }
 
 Client* Hotel::getClientDupaId(int id) {
@@ -100,64 +97,17 @@ bool Hotel::areRezervareSuprapusa(int numarCamera, const Data& checkIn, const Da
 }
 
 void Hotel::adaugaCamera() {
-    int numarCamera;
-    string tipCamera;
-    double pretNoapte;
-    bool areAerConditionat, areWiFi, areTV, areMinibar;
-
-    cout << "Introduceti numarul camerei: ";
-    cin >> numarCamera;
-    getchar();
-
-    cout << "Introduceti tipul camerei (ex. Single, Double): ";
-    getline(cin, tipCamera);
-    while (tipCamera.empty()) {
-        cout << "Tipul camerei nu poate fi gol. Introduceti din nou: ";
-        getline(cin, tipCamera);
-    }
-
-    cout << "Introduceti pretul pe noapte: ";
-    cin >> pretNoapte;
-    getchar();
-
-    char input;
-    cout << "Are aer conditionat? (d/N): ";
-    cin >> input;
-    areAerConditionat = (input == 'd' || input == 'D');
-    getchar();
-
-    cout << "Are WiFi? (d/N): ";
-    cin >> input;
-    areWiFi = (input == 'd' || input == 'D');
-    getchar();
-
-    cout << "Are TV? (d/N): ";
-    cin >> input;
-    areTV = (input == 'd' || input == 'D');
-    getchar();
-
-    cout << "Are minibar? (d/N): ";
-    cin >> input;
-    areMinibar = (input == 'd' || input == 'D');
-    getchar();
-
-    if (tipCamera.empty()) {
-        cout << "Eroare: Tipul camerei nu poate fi gol." << endl;
-        return;
-    }
-    if (pretNoapte <= 0) {
-        cout << "Eroare: Pretul pe noapte trebuie sa fie pozitiv." << endl;
-        return;
-    }
+    Camera camera;
+    cin >> camera;
 
     for (const auto& room : camere) {
-        if (room.getNumarCamera() == numarCamera) {
-            cout << "Camera cu numarul " << numarCamera << " exista deja." << endl;
+        if (room.getNumarCamera() == camera.getNumarCamera()) {
+            cout << "Camera cu numarul " << camera.getNumarCamera() << " exista deja." << endl;
             return;
         }
     }
 
-    camere.emplace_back(numarCamera, tipCamera, pretNoapte, false, areAerConditionat, areWiFi, areTV, areMinibar);
+    camere.push_back(camera);
     salveazaDate();
     cout << "Camera adaugata cu succes!" << endl;
 }
@@ -269,7 +219,6 @@ void Hotel::incarcaRezervari() {
 }
 
 void Hotel::salveazaClienti() {
-    filesystem::create_directory("data");
     ofstream file("data/Clienti.txt");
     if (!file.is_open()) {
         cerr << "Eroare la deschiderea Clienti.txt" << endl;
@@ -283,7 +232,6 @@ void Hotel::salveazaClienti() {
 }
 
 void Hotel::salveazaCamere() {
-    filesystem::create_directory("data");
     ofstream file("data/Camere.txt");
     if (!file.is_open()) {
         cerr << "Eroare la deschiderea Camere.txt" << endl;
@@ -298,7 +246,6 @@ void Hotel::salveazaCamere() {
 }
 
 void Hotel::salveazaRezervari() {
-    filesystem::create_directory("data");
     ofstream file("data/Rezervari.txt");
     if (!file.is_open()) {
         cerr << "Eroare la deschiderea Rezervari.txt" << endl;
@@ -420,15 +367,15 @@ void Hotel::afiseazaCamereOcupate() {
     cout << left << setw(8) << "Numar" << setw(12) << "Tip" << setw(14) << "Pret/noapte" << setw(8) << "WiFi" << setw(6) << "TV" << setw(9) << "Minibar" << setw(10) << "AerCond." << endl;
     cout << string(67, '-') << endl;
 
-    for (const auto& room : camere) {
-        if (areRezervareSuprapusa(room.getNumarCamera(), startData, endData)) {
-            cout << left << setw(8) << room.getNumarCamera()
-                 << setw(12) << room.getTipCamera()
-                 << setw(14) << room.getPretNoapte()
-                 << setw(8) << (room.getAreWiFi() ? "Da" : "Nu")
-                 << setw(6) << (room.getAreTV() ? "Da" : "Nu")
-                 << setw(9) << (room.getAreMinibar() ? "Da" : "Nu")
-                 << setw(10) << (room.getAreAerConditionat() ? "Da" : "Nu") << endl;
+    for (const auto& camera : camere) {
+        if (areRezervareSuprapusa(camera.getNumarCamera(), startData, endData)) {
+            cout << left << setw(8) << camera.getNumarCamera()
+                 << setw(12) << camera.getTipCamera()
+                 << setw(14) << camera.getPretNoapte()
+                 << setw(8) << (camera.getAreWiFi() ? "Da" : "Nu")
+                 << setw(6) << (camera.getAreTV() ? "Da" : "Nu")
+                 << setw(9) << (camera.getAreMinibar() ? "Da" : "Nu")
+                 << setw(10) << (camera.getAreAerConditionat() ? "Da" : "Nu") << endl;
             found = true;
         }
     }
@@ -546,7 +493,7 @@ void Hotel::modificaStareRezervare(StareRezervare nouaStare) {
                         salveazaDate();
                         cout << "Rezervare confirmata cu succes!" << endl;
                     } else {
-                        cout << "Rezervarea nu este in stare InAsteptare." << endl;
+                        cout << "Rezervarea nu este in starea: In Asteptare." << endl;
                     }
                     break;
                 case StareRezervare::Anulata:
@@ -614,7 +561,6 @@ void Hotel::modificaStareRezervare(StareRezervare nouaStare) {
     cout << "Rezervare cu ID-ul " << idRezervare << " nu a fost gasita." << endl;
 }
 
-
 void Hotel::modificaRezervare() {
     cout << "\nModificare rezervare." << endl;
     int idRezervare, idClient, numarCamera;
@@ -634,27 +580,23 @@ void Hotel::modificaRezervare() {
 
     for (auto& rezervare : rezervari) {
         if (rezervare.getIdRezervare() == idRezervare) {
-            // Verificăm dacă rezervarea este într-o stare modificabilă
             if (rezervare.getStare() != StareRezervare::InAsteptare && rezervare.getStare() != StareRezervare::Confirmata) {
                 cout << "Eroare: Rezervarea nu poate fi modificata." << endl;
                 return;
             }
 
-            // Verificăm clientul
             Client* client = getClientDupaId(idClient);
             if (!client) {
                 cout << "Eroare: Clientul cu ID " << idClient << " nu exista." << endl;
                 return;
             }
 
-            // Verificăm camera
             Camera* camera = getCameraDupaNumar(numarCamera);
             if (!camera) {
                 cout << "Eroare: Camera cu numarul " << numarCamera << " nu exista." << endl;
                 return;
             }
 
-            // Verificăm validitatea datelor
             if (!checkIn.esteValida() || !checkOut.esteValida()) {
                 cout << "Eroare: Datele de check-in sau check-out nu sunt valide." << endl;
                 return;
@@ -665,7 +607,6 @@ void Hotel::modificaRezervare() {
                 return;
             }
 
-            // Verificăm suprapunerile (excluzând rezervarea curentă)
             for (const auto& altaRezervare : rezervari) {
                 if (altaRezervare.getIdRezervare() != idRezervare &&
                     altaRezervare.getIdCamera() == numarCamera &&
@@ -678,11 +619,9 @@ void Hotel::modificaRezervare() {
                 }
             }
 
-            // Calculăm noile valori
             int nrNopti = calculeazaNrNopti(checkIn, checkOut);
             double pretTotal = calculeazaPretTotal(nrNopti, camera->getPretNoapte());
 
-            // Actualizăm rezervarea
             rezervare.setIdClient(idClient);
             rezervare.setIdCamera(numarCamera);
             rezervare.setCheckIn(checkIn);

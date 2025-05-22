@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -29,3 +30,41 @@ string Camera::toString() const {
            "TV: " + (areTV ? "Da" : "Nu") + "\n" +
            "Minibar: " + (areMinibar ? "Da" : "Nu") + "\n";
 }
+
+ostream& operator<<(ostream& out, const Camera& camera) {
+    out << camera.toString();
+    return out;
+}
+
+istream& operator>>(istream& in, Camera& camera) {
+    cout << "Numar camera: ";
+    in >> camera.numarCamera;
+    in.ignore();
+
+    cout << "Tip camera: ";
+    getline(in, camera.tipCamera);
+
+    cout << "Pret pe noapte: ";
+    in >> camera.pretNoapte;
+
+    char raspuns;
+
+    cout << "Are aer conditionat? (d/n): ";
+    in >> raspuns;
+    camera.areAerConditionat = (raspuns == 'd' || raspuns == 'D');
+
+    cout << "Are WiFi? (d/n): ";
+    in >> raspuns;
+    camera.areWiFi = (raspuns == 'd' || raspuns == 'D');
+
+    cout << "Are TV? (d/n): ";
+    in >> raspuns;
+    camera.areTV = (raspuns == 'd' || raspuns == 'D');
+
+    cout << "Are minibar? (d/n): ";
+    in >> raspuns;
+    camera.areMinibar = (raspuns == 'd' || raspuns == 'D');
+
+    return in;
+}
+
