@@ -16,6 +16,9 @@ public:
     string toString() const;
     friend istream& operator>>(istream& in, Data& data);
     friend ostream& operator<<(ostream& out, const Data& data);
+
+    static int getZileInLuna(int luna, int an);
+    static Data getCurrentDate();
 };
 
 #endif

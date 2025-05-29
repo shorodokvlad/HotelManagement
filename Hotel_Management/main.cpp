@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 int main()
 {
     Hotel hotel;
@@ -157,40 +156,76 @@ int main()
         }
         case 2:
         {
-                do
-                {
-                    cout << "\nMeniu Administrator:" << endl;
+            Administrator administrator(&hotel);
+
+            if (administrator.login()) {
+                system("cls");
+                int optiuneAdministratorInterior;
+                do {
+                    cout << "\n--- Meniu Administrator ---" << endl;
                     cout << "1. Adauga camera" << endl;
                     cout << "2. Afiseaza toate camerele" << endl;
                     cout << "3. Adauga angajat" << endl;
                     cout << "4. Afiseaza angajati" << endl;
-                    cout << "0. Iesire" << endl;
+                    cout << "5. Vizualizare incasari" << endl;
+                    cout << "6. Statistici privind gradul de ocupare" << endl;
+                    cout << "7. Schimba credentiale" << endl;
+                    cout << "0. Inapoi la meniul principal" << endl;
                     cout << "Alege o optiune: ";
-                    cin >> optiuneAdministrator;
 
-                    switch (optiuneAdministrator)
-                    {
-                    case 1:
-                        system("cls");
-                        hotel.adaugaCamera();
-                        break;
-                    case 2:
-                        system("cls");
-                        hotel.afiseazaToateCamerele();
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        system("cls");
-                        break;
-                    case 0:
-                        system("cls");
-                        break;
-                    default:
-                        cout << "\nOptiune invalida! Incearca din nou." << endl;
+                    cin >> optiuneAdministratorInterior;
+                    while(cin.fail() || optiuneAdministratorInterior < 0 || optiuneAdministratorInterior > 7) {
+                        cout << "Optiune invalida. Introduceti un numar intre 0 si 7: ";
+                        cin.clear();
+                        cin >> optiuneAdministratorInterior;
                     }
-                }
-                while (optiuneAdministrator != 0);
+
+                    switch (optiuneAdministratorInterior) {
+                        case 1:
+                            system("cls");
+                            cout << "--- Adaugare Camera ---" << endl;
+                            administrator.gestioneazaAdaugareCamera();
+                            break;
+                        case 2:
+                            system("cls");
+                            cout << "--- Afisare Toate Camerele ---" << endl;
+                            administrator.gestioneazaAfisareCamere();
+                            break;
+                        case 3:
+                            system("cls");
+                            administrator.adaugaAngajat();
+                            break;
+                        case 4:
+                            system("cls");
+                            administrator.afiseazaAngajati();
+                            break;
+                        case 5:
+                            system("cls");
+                            administrator.vizualizeazaIncasari();
+                            break;
+                        case 6:
+                            system("cls");
+                            administrator.statisticiGradOcupare();
+                            break;
+                        case 7:
+                            system("cls");
+                            administrator.schimbaCredentiale();
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            cout << "\nOptiune invalida!" << endl;
+                            break;
+                    }
+                } while (optiuneAdministratorInterior != 0);
+                 system("cls");
+            } else {
+                cout << "\nApasati orice tasta pentru a reveni la meniul principal...";
+                if (cin.fail()) { cin.clear(); }
+                cin.get();
+                system("cls");
+            }
+            break;
         }
         case 0:
         {

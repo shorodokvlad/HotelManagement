@@ -45,6 +45,9 @@ public:
     void afiseazaRezervari();
     void modificaRezervare();
     void modificaStareRezervare(StareRezervare nouaStare);
+
+    const vector<Camera>& getCamere() const { return camere; }
+    const vector<Rezervare>& getRezervari() const { return rezervari; }
 };
 
 #endif
