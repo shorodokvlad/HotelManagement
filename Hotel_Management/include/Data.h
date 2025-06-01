@@ -14,11 +14,16 @@ public:
     bool esteValida() const;
     bool operator<(const Data& other) const;
     string toString() const;
+
+    int getZi() const;
+    int getLuna() const;
+    int getAn() const;
+
     friend istream& operator>>(istream& in, Data& data);
     friend ostream& operator<<(ostream& out, const Data& data);
 
     static int getZileInLuna(int luna, int an);
-    static Data getCurrentDate();
+    static Data getDataCurenta();
 };
 
 #endif

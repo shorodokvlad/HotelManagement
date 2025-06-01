@@ -16,18 +16,7 @@ int Hotel::calculeazaNrNopti(const Data& checkIn, const Data& checkOut) {
     Data temp = checkIn;
 
     while (temp < checkOut) {
-        int maxZile;
-
-        if (temp.luna == 2) {
-            if ((temp.an % 4 == 0 && temp.an % 100 != 0) || (temp.an % 400 == 0))
-                maxZile = 29;
-            else
-                maxZile = 28;
-        } else if ((temp.luna <= 7 && temp.luna % 2 == 1) || (temp.luna >= 8 && temp.luna % 2 == 0)) {
-            maxZile = 31;
-        } else {
-            maxZile = 30;
-        }
+        int maxZile = temp.getZileInLuna(temp.luna, temp.an);
 
         temp.zi++;
         if (temp.zi > maxZile) {
@@ -284,16 +273,61 @@ void Hotel::afiseazaClienti() {
         cout << "Nu exista clienti inregistrati." << endl;
         return;
     }
-    cout << left << setw(6) << "ID" << setw(15) << "Prenume" << setw(15) << "Nume" << setw(20) << "CNP" << setw(15) << "Telefon" << endl;
-    cout << string(71, '-') << endl;
-    for (const auto& client : clienti) {
-        cout << left << setw(6) << client.getIdClient()
-             << setw(15) << client.getPrenume()
-             << setw(15) << client.getNume()
-             << setw(20) << client.getCNP()
-             << setw(15) << client.getTelefon() << endl;
-    }
+
+    const int clientiPePagina = 46;
+    int totalPagini = (clienti.size() + clientiPePagina - 1) / clientiPePagina;
+    int paginaCurenta = 1;
+    int tasta;
+
+    do {
+        system("cls");
+
+        int start = (paginaCurenta - 1) * clientiPePagina;
+        int end = min(start + clientiPePagina, (int)clienti.size());
+
+        // Antet
+        cout << left << setw(6) << "ID" << setw(15) << "Prenume" << setw(15) << "Nume"
+             << setw(20) << "CNP" << setw(15) << "Telefon" << endl;
+        cout << string(71, '-') << endl;
+
+        // Afișare clienți
+        for (int i = start; i < end; ++i) {
+            const auto& client = clienti[i];
+            cout << left << setw(6) << client.getIdClient()
+                 << setw(15) << client.getPrenume()
+                 << setw(15) << client.getNume()
+                 << setw(20) << client.getCNP()
+                 << setw(15) << client.getTelefon() << endl;
+        }
+
+        // Bara de paginare
+        cout << "\nNavigare: ";
+        if (paginaCurenta > 1) cout << "< ";
+        for (int i = 1; i <= totalPagini; ++i) {
+            if (i == paginaCurenta)
+                cout << "[" << i << "] ";
+            else
+                cout << i << " ";
+        }
+        if (paginaCurenta < totalPagini) cout << ">";
+
+        cout << "\n\nFoloseste sageti <- -> pentru navigare, ESC pentru iesire.";
+
+        tasta = _getch();
+
+        if (tasta == 224) {
+            int tastaSpeciala = _getch();
+            if (tastaSpeciala == 75 && paginaCurenta > 1)
+                paginaCurenta--;
+            else if (tastaSpeciala == 77 && paginaCurenta < totalPagini)
+                paginaCurenta++;
+        }
+
+    } while (tasta != 27);
+     system("cls");
 }
+
+
 
 void Hotel::afiseazaToateCamerele() {
     if (camere.empty()) {
@@ -391,9 +425,20 @@ void Hotel::adaugaRezervare() {
     cin >> clientId;
     getchar();
 
+    if (!getClientDupaId(clientId)) {
+        cout << "Eroare: Clientul cu ID-ul " << clientId << " nu exista." << endl;
+        return;
+    }
+
     cout << "Introduceti numarul camerei: ";
     cin >> numarCamera;
     getchar();
+
+    Camera* camera = getCameraDupaNumar(numarCamera);
+    if (!camera) {
+        cout << "Eroare: Camera cu numarul " << numarCamera << " nu exista." << endl;
+        return;
+    }
 
     cout << "Introduceti data de check-in (DD.MM.YYYY): ";
     Data checkIn = citesteData();
@@ -401,16 +446,16 @@ void Hotel::adaugaRezervare() {
         cout << "Eroare: Data de check-in invalida." << endl;
         return;
     }
+    Data dataCurenta = Data::getDataCurenta();
+    if (checkIn < dataCurenta) {
+        cout << "Eroare: Data de check-in nu poate fi in trecut." << endl;
+        return;
+    }
 
     cout << "Introduceti data de check-out (DD.MM.YYYY): ";
     Data checkOut = citesteData();
     if (!checkOut.esteValida()) {
         cout << "Eroare: Data de check-out invalida." << endl;
-        return;
-    }
-
-    if (!getClientDupaId(clientId)) {
-        cout << "Eroare: Clientul cu ID-ul " << clientId << " nu exista." << endl;
         return;
     }
 
@@ -423,11 +468,6 @@ void Hotel::adaugaRezervare() {
         }
     }
 
-    Camera* camera = getCameraDupaNumar(numarCamera);
-    if (!camera) {
-        cout << "Eroare: Camera cu numarul " << numarCamera << " nu exista." << endl;
-        return;
-    }
     if (!(checkIn < checkOut)) {
         cout << "Eroare: Data de check-in trebuie sa fie inainte de data de check-out." << endl;
         return;
@@ -445,38 +485,109 @@ void Hotel::adaugaRezervare() {
 }
 
 void Hotel::afiseazaRezervari() {
-    if (rezervari.empty()) {
-        cout << "Nu exista rezervari inregistrate." << endl;
+    int lunaSelectata;
+    const string numeLuni[] = {"", "Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie",
+                               "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"};
+
+    cout << "Vizualizare rezervari pe luni: \n";
+    cout << "1. Ianuarie\n2. Februarie\n3. Martie\n4. Aprilie\n5. Mai\n6. Iunie\n"
+         << "7. Iulie\n8. August\n9. Septembrie\n10. Octombrie\n11. Noiembrie\n12. Decembrie\n";
+    cout << "Introduceti luna (1-12): ";
+    cin >> lunaSelectata;
+
+    if (lunaSelectata < 1 || lunaSelectata > 12) {
+        cout << "Luna invalida! Va rugam introduceti o valoare intre 1 si 12." << endl;
         return;
     }
 
-    cout << left << setw(6) << "ID" << setw(8) << "Camera" << setw(12) << "ID Client" << setw(12) << "Prenume" << setw(12) << "Nume" << setw(12) << "Check-In"
-         << setw(12) << "Check-Out" << setw(15) << "Stare" << setw(8) << "Nopti" << setw(10) << "Pret(RON)" << endl;
-    cout << string(105, '-') << endl;
-
+    vector<Rezervare> rezervariFiltrate;
     for (const auto& res : rezervari) {
-        string prenume = "N/A", nume = "N/A";
-        for (const auto& client : clienti) {
-            if (client.getIdClient() == res.getIdClient()) {
-                prenume = client.getPrenume();
-                nume = client.getNume();
-                break;
+        if (res.getCheckIn().getLuna() == lunaSelectata) {
+            rezervariFiltrate.push_back(res);
+        }
+    }
+
+    if (rezervariFiltrate.empty()) {
+        system("cls");
+        cout << "Nu exista rezervari inregistrate pentru luna selectata." << endl;
+        return;
+    }
+
+    const int rezervariPePagina = 43;
+    int totalPagini = (rezervariFiltrate.size() + rezervariPePagina - 1) / rezervariPePagina;
+    int paginaCurenta = 1;
+    int tasta;
+
+    Data dataCurenta = Data::getDataCurenta();
+    do {
+        system("cls");
+
+        cout << string(46, '-');
+        cout << "Rezervari " << numeLuni[lunaSelectata] <<" " << dataCurenta.getAn();
+        cout << string(46, '-') << "\n\n";
+
+        // Antet tabel
+        cout << left << setw(6) << "ID" << setw(8) << "Camera" << setw(12) << "ID Client"
+             << setw(12) << "Prenume" << setw(12) << "Nume" << setw(12) << "Check-In"
+             << setw(12) << "Check-Out" << setw(15) << "Stare" << setw(8) << "Nopti"
+             << setw(10) << "Pret(RON)" << endl;
+        cout << string(105, '-') << endl;
+
+        // Afișare rezervări paginat
+        int start = (paginaCurenta - 1) * rezervariPePagina;
+        int end = min(start + rezervariPePagina, (int)rezervariFiltrate.size());
+
+        for (int i = start; i < end; ++i) {
+            const auto& res = rezervariFiltrate[i];
+            string prenume = "N/A", nume = "N/A";
+            for (const auto& client : clienti) {
+                if (client.getIdClient() == res.getIdClient()) {
+                    prenume = client.getPrenume();
+                    nume = client.getNume();
+                    break;
+                }
             }
+
+            cout << left
+                 << setw(6) << res.getIdRezervare()
+                 << setw(8) << res.getIdCamera()
+                 << setw(12) << res.getIdClient()
+                 << setw(12) << prenume
+                 << setw(12) << nume
+                 << setw(12) << res.getCheckIn().toString()
+                 << setw(12) << res.getCheckOut().toString()
+                 << setw(15) << res.stareToString()
+                 << setw(8) << res.getNrNopti()
+                 << setw(10) << fixed << setprecision(2) << res.getPretTotal()
+                 << endl;
         }
 
-        cout << left
-             << setw(6) << res.getIdRezervare()
-             << setw(8) << res.getIdCamera()
-             << setw(12) << res.getIdClient()
-             << setw(12) << prenume
-             << setw(12) << nume
-             << setw(12) << res.getCheckIn().toString()
-             << setw(12) << res.getCheckOut().toString()
-             << setw(15) << res.stareToString()
-             << setw(8) << res.getNrNopti()
-             << setw(10) << fixed << setprecision(2) << res.getPretTotal()
-             << endl;
-    }
+        // Navigare pagini
+        cout << "\nNavigare: ";
+        if (paginaCurenta > 1) cout << "< ";
+        for (int i = 1; i <= totalPagini; ++i) {
+            if (i == paginaCurenta)
+                cout << "[" << i << "] ";
+            else
+                cout << i << " ";
+        }
+        if (paginaCurenta < totalPagini) cout << ">";
+
+        // Mesaj navigare
+        cout << "\n\nFoloseste sageti <- -> pentru navigare, ESC pentru iesire.";
+
+        // Așteaptă tastă
+        tasta = _getch();
+        if (tasta == 224) {
+            int tastaSpeciala = _getch();
+            if (tastaSpeciala == 75 && paginaCurenta > 1)
+                paginaCurenta--;
+            else if (tastaSpeciala == 77 && paginaCurenta < totalPagini)
+                paginaCurenta++;
+        }
+
+    } while (tasta != 27);
+    system("cls");
 }
 
 void Hotel::modificaStareRezervare(StareRezervare nouaStare) {
@@ -521,32 +632,46 @@ void Hotel::modificaStareRezervare(StareRezervare nouaStare) {
                     break;
                 case StareRezervare::CheckIn:
                     if (rezervare.getStare() == StareRezervare::Confirmata) {
-                        rezervare.setStare(StareRezervare::CheckIn);
-                        salveazaDate();
-                        cout << "Check-in realizat cu succes!" << endl;
+                        Data dataCurenta = Data::getDataCurenta();
+                        if (rezervare.getCheckIn().getZi() == dataCurenta.getZi() &&
+                            rezervare.getCheckIn().getLuna() == dataCurenta.getLuna() &&
+                            rezervare.getCheckIn().getAn() == dataCurenta.getAn()) {
+                            rezervare.setStare(StareRezervare::CheckIn);
+                            salveazaDate();
+                            cout << "Check-in realizat cu succes!" << endl;
+                        } else {
+                            cout << "Eroare: Check-in-ul se poate realiza doar in data de check-in specificata (" << rezervare.getCheckIn().toString() << ")." << endl;
+                        }
                     } else {
                         cout << "Rezervarea nu este in stare Confirmata." << endl;
                     }
                     break;
                 case StareRezervare::CheckOut:
                     if (rezervare.getStare() == StareRezervare::CheckIn) {
-                        rezervare.setStare(StareRezervare::CheckOut);
-                        Camera* camera = getCameraDupaNumar(rezervare.getIdCamera());
-                        if (camera) {
-                            bool esteIncaOcupata = false;
-                            for (const auto& altaRezervare : rezervari) {
-                                if (altaRezervare.getIdCamera() == rezervare.getIdCamera() && altaRezervare.getIdRezervare() != idRezervare &&
-                                    altaRezervare.getStare() != StareRezervare::Anulata && altaRezervare.getStare() != StareRezervare::CheckOut) {
-                                    esteIncaOcupata = true;
-                                    break;
+                        Data dataCurenta = Data::getDataCurenta();
+                        if (rezervare.getCheckOut().getZi() == dataCurenta.getZi() &&
+                            rezervare.getCheckOut().getLuna() == dataCurenta.getLuna() &&
+                            rezervare.getCheckOut().getAn() == dataCurenta.getAn()) {
+                            rezervare.setStare(StareRezervare::CheckOut);
+                            Camera* camera = getCameraDupaNumar(rezervare.getIdCamera());
+                            if (camera) {
+                                bool esteIncaOcupata = false;
+                                for (const auto& altaRezervare : rezervari) {
+                                    if (altaRezervare.getIdCamera() == rezervare.getIdCamera() && altaRezervare.getIdRezervare() != idRezervare &&
+                                        altaRezervare.getStare() != StareRezervare::Anulata && altaRezervare.getStare() != StareRezervare::CheckOut) {
+                                        esteIncaOcupata = true;
+                                        break;
+                                    }
+                                }
+                                if (!esteIncaOcupata) {
+                                    camera->setOcupata(false);
                                 }
                             }
-                            if (!esteIncaOcupata) {
-                                camera->setOcupata(false);
-                            }
+                            salveazaDate();
+                            cout << "Check-out realizat cu succes!" << endl;
+                        } else {
+                            cout << "Eroare: Check-out-ul se poate realiza doar in data de check-out specificata (" << rezervare.getCheckOut().toString() << ")." << endl;
                         }
-                        salveazaDate();
-                        cout << "Check-out realizat cu succes!" << endl;
                     } else {
                         cout << "Rezervarea nu este in stare CheckIn." << endl;
                     }

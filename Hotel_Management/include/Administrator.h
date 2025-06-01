@@ -16,10 +16,11 @@ private:
     string encryptedPassword;
     Hotel* hotel;
     vector<Angajat> angajati;
+    vector<Camera> camere;
     static int nextAngajatId;
 
-    static string encryptDecrypt(const string& text, char key);
-    void ensureAdminFileExists(const string& defaultUser, const string& defaultPass);
+    static string criptareDecriptare(const string& text, char key);
+    void verificaSauCreeazaFisierAdmin(const string& defaultUser, const string& defaultPass);
 
 public:
     static const char XOR_KEY = 'K';
@@ -35,9 +36,6 @@ public:
     void adaugaAngajat();
     void afiseazaAngajati() const;
     void schimbaCredentiale();
-
-    void gestioneazaAdaugareCamera();
-    void gestioneazaAfisareCamere() const;
 
     double getIncasariPerioada(const Data& start, const Data& end) const;
     void vizualizeazaIncasari() const;

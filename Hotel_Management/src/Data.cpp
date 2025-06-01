@@ -26,6 +26,9 @@ bool Data::operator<(const Data& other) const {
 string Data::toString() const {
     return to_string(zi) + "." + to_string(luna) + "." + to_string(an);
 }
+int Data::getZi() const { return zi; }
+int Data::getLuna() const { return luna; }
+int Data::getAn() const { return an; }
 
 ostream& operator<<(ostream& out, const Data& data) {
     out << data.toString();
@@ -33,7 +36,24 @@ ostream& operator<<(ostream& out, const Data& data) {
 }
 
 istream& operator>>(istream& in, Data& data) {
-    scanf("%d.%d.%d", &data.zi, &data.luna, &data.an);
+    string input;
+    in >> input;
+
+    if (input.length() != 10 || input[2] != '.' || input[5] != '.' ||
+        !isdigit(input[0]) || !isdigit(input[1]) ||
+        !isdigit(input[3]) || !isdigit(input[4]) ||
+        !isdigit(input[6]) || !isdigit(input[7]) || !isdigit(input[8]) || !isdigit(input[9])) {
+        cout << "Eroare: Formatul trebuie sa fie DD.MM.YYYY!" << endl;
+        return in;
+    }
+
+    int zi = stoi(input.substr(0, 2));
+    int luna = stoi(input.substr(3, 2));
+    int an = stoi(input.substr(6, 4));
+
+    data.zi = zi;
+    data.luna = luna;
+    data.an = an;
 
     return in;
 }
@@ -55,7 +75,7 @@ int Data::getZileInLuna(int luna, int an) {
     }
 }
 
-Data Data::getCurrentDate() {
+Data Data::getDataCurenta() {
     time_t t = time(0);
     tm* now = localtime(&t);
     if (now) {

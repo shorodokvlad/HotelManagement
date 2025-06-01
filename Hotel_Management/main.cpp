@@ -156,11 +156,10 @@ int main()
         }
         case 2:
         {
+            system("cls");
             Administrator administrator(&hotel);
-
             if (administrator.login()) {
                 system("cls");
-                int optiuneAdministratorInterior;
                 do {
                     cout << "\n--- Meniu Administrator ---" << endl;
                     cout << "1. Adauga camera" << endl;
@@ -169,27 +168,25 @@ int main()
                     cout << "4. Afiseaza angajati" << endl;
                     cout << "5. Vizualizare incasari" << endl;
                     cout << "6. Statistici privind gradul de ocupare" << endl;
-                    cout << "7. Schimba credentiale" << endl;
+                    cout << "7. Schimba login sau parola" << endl;
                     cout << "0. Inapoi la meniul principal" << endl;
                     cout << "Alege o optiune: ";
 
-                    cin >> optiuneAdministratorInterior;
-                    while(cin.fail() || optiuneAdministratorInterior < 0 || optiuneAdministratorInterior > 7) {
+                    cin >> optiuneAdministrator;
+                    while(cin.fail() || optiuneAdministrator < 0 || optiuneAdministrator > 7) {
                         cout << "Optiune invalida. Introduceti un numar intre 0 si 7: ";
                         cin.clear();
-                        cin >> optiuneAdministratorInterior;
+                        cin >> optiuneAdministrator;
                     }
 
-                    switch (optiuneAdministratorInterior) {
+                    switch (optiuneAdministrator) {
                         case 1:
                             system("cls");
-                            cout << "--- Adaugare Camera ---" << endl;
-                            administrator.gestioneazaAdaugareCamera();
+                            hotel.adaugaCamera();
                             break;
                         case 2:
                             system("cls");
-                            cout << "--- Afisare Toate Camerele ---" << endl;
-                            administrator.gestioneazaAfisareCamere();
+                            hotel.afiseazaToateCamerele();
                             break;
                         case 3:
                             system("cls");
@@ -217,13 +214,8 @@ int main()
                             cout << "\nOptiune invalida!" << endl;
                             break;
                     }
-                } while (optiuneAdministratorInterior != 0);
+                } while (optiuneAdministrator != 0);
                  system("cls");
-            } else {
-                cout << "\nApasati orice tasta pentru a reveni la meniul principal...";
-                if (cin.fail()) { cin.clear(); }
-                cin.get();
-                system("cls");
             }
             break;
         }

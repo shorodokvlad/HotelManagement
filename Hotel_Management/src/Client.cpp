@@ -14,8 +14,17 @@ void Client::setIdClient(int id) { idClient = id; }
 void Client::setTelefon(const string& _telefon) { telefon = _telefon; }
 
 bool Client::validareTelefon(const string& telefon) {
-    if (telefon.length() != 10) return false;
-    for (char c : telefon) if (!isdigit(c)) return false;
+    for (char c : telefon) if (!isdigit(c))
+    {
+        cout << "Numarul de telefon trebuie sa contina numai cifre!\n";
+        return false;
+    }
+
+    if (telefon.length() != 10)
+    {
+        cout << "Numarul de telefon trebuie sa contina 10 cifre!\n";
+        return false;
+    }
     return true;
 }
 

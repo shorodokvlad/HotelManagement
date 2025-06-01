@@ -2,87 +2,89 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="src\Client.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1078" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="15" />
-		</Folding>
-	</File>
-	<File name="src\Administrator.cpp" open="1" top="1" tabpos="16" split="0" active="1" splitpos="0" zoom_1="-4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7473" topLine="156" />
-		</Cursor>
-	</File>
-	<File name="src\Angajat.cpp" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="-4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="248" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\Data.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="522" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src\Rezervare.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2944" topLine="55" />
-		</Cursor>
-	</File>
-	<File name="src\Camera.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2425" topLine="37" />
-		</Cursor>
-	</File>
-	<File name="src\Hotel.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="-4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="190" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="-3" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5687" topLine="42" />
+			<Cursor1 position="255" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="include\Hotel.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Data.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1402" topLine="18" />
+			<Cursor1 position="616" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="include\Client.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+	<File name="include\Administrator.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="140" topLine="0" />
+			<Cursor1 position="1290" topLine="5" />
 		</Cursor>
 	</File>
-	<File name="src\Data.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="-3" zoom_2="0">
+	<File name="include\Hotel.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1526" topLine="0" />
+			<Cursor1 position="1418" topLine="20" />
 		</Cursor>
 	</File>
-	<File name="include\Camera.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="-3" zoom_2="0">
+	<File name="include\Camera.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="107" topLine="0" />
+			<Cursor1 position="1092" topLine="5" />
 		</Cursor>
 	</File>
-	<File name="include\Angajat.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\Persoana.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="0" />
+			<Cursor1 position="853" topLine="85" />
 		</Cursor>
 	</File>
-	<File name="include\Administrator.h" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+	<File name="src\Client.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1639" topLine="18" />
+			<Cursor1 position="0" topLine="1" />
 		</Cursor>
 	</File>
-	<File name="include\Rezervare.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="11" zoom_2="0">
+	<File name="src\Rezervare.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="429" topLine="0" />
+			<Cursor1 position="442" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\Persoana.cpp" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\Administrator.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="0" />
+			<Cursor1 position="3739" topLine="125" />
+		</Cursor>
+	</File>
+	<File name="include\Angajat.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="924" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="src\Hotel.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9875" topLine="311" />
+		</Cursor>
+	</File>
+	<File name="src\Angajat.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1863" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="include\Rezervare.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1495" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\Data.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="17" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\Client.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="733" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\Camera.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2427" topLine="37" />
+		</Cursor>
+	</File>
+	<File name="include\Persoana.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="907" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

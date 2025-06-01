@@ -24,6 +24,8 @@ public:
     void setPrenume(const string& _prenume);
     void setCNP(const string& _cnp);
 
+    static bool validareNume(const string& nume);
+    static bool validarePrenume(const string& prenume);
     static bool validareCNP(const string& cnp);
 
     virtual string toString() const;
