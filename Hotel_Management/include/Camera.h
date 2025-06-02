@@ -30,6 +30,9 @@ public:
 
     string toString() const;
 
+    static bool validareNumarCamera(const string& input, int& numarOut);
+    static bool validarePret(const string& input, double& pretOut);
+
     friend ostream& operator<<(ostream& out, const Camera& camera);
     friend istream& operator>>(istream& in, Camera& camera);
 

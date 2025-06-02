@@ -28,5 +28,3 @@
 28,Roman,Darius,1880101340143,Responsabil achizitii,5600,3.4.2020
 29,Avram,Claudia,2910501340144,Camerist,3150,4.5.2022
 30,Tanase,Liviu,1860302340145,Portar,3000,7.7.2023
-31,asd,asd,1234567890123,asd,300,2.1.2000
-32,Ion,Popescu,1234567891212,Receptioner,5600,20.5.2022

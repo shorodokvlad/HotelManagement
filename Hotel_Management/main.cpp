@@ -1,8 +1,13 @@
 #include <iostream>
+#include <windows.h>
 #include "Hotel.h"
 #include "Administrator.h"
 
 using namespace std;
+
+void setColor(int color) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
 
 int main()
 {
@@ -12,14 +17,17 @@ int main()
 
     do
     {
+        setColor(14);
         cout << "=============================" << endl;
         cout << "      HOTEL Management       " << endl;
         cout << "=============================" << endl;
+        setColor(3);
         cout << "1. Intra ca Receptioner" << endl;
+        setColor(9);
         cout << "2. Intra ca Administrator" << endl;
+        setColor(8);
         cout << "0. Iesire" << endl;
-        cout << "Alege o optiune: ";
-        cin >> optiune;
+        optiune = hotel.validareNumar("Alege o optiune: ");
 
         switch (optiune)
         {
@@ -28,15 +36,17 @@ int main()
             system("cls");
             do
             {
+                setColor(14);
                 cout << "\nMeniu Receptioner:" << endl;
+                setColor(3);
                 cout << "1. Adauga client" << endl;
                 cout << "2. Afiseaza clienti" << endl;
                 cout << "3. Afiseaza camere libere" << endl;
                 cout << "4. Afiseaza camere ocupate" << endl;
                 cout << "5. Gestionare rezervari" << endl;
+                setColor(8);
                 cout << "0. Iesire" << endl;
-                cout << "Alege o optiune: ";
-                cin >> optiuneReceptioner;
+                optiuneReceptioner = hotel.validareNumar("Alege o optiune: ");
 
                 switch (optiuneReceptioner)
                 {
@@ -70,7 +80,9 @@ int main()
                     int optiuneRezervare;
                     do
                     {
+                        setColor(14);
                         cout << "\nGestionare rezervari:" << endl;
+                        setColor(3);
                         cout << "1. Adaugare rezervare" << endl;
                         cout << "2. Vizualizare rezervari" << endl;
                         cout << "3. Confirmare rezervare" << endl;
@@ -78,9 +90,9 @@ int main()
                         cout << "5. Check-out" << endl;
                         cout << "6. Anulare rezervare" << endl;
                         cout << "7. Modificare rezervare" << endl;
+                        setColor(8);
                         cout << "0. Inapoi" << endl;
-                        cout << "Alege o optiune: ";
-                        cin >> optiuneRezervare;
+                        optiuneRezervare = hotel.validareNumar("Alege o optiune: ");
 
                         switch (optiuneRezervare)
                         {
@@ -161,7 +173,9 @@ int main()
             if (administrator.login()) {
                 system("cls");
                 do {
+                    setColor(14);
                     cout << "\n--- Meniu Administrator ---" << endl;
+                    setColor(9);
                     cout << "1. Adauga camera" << endl;
                     cout << "2. Afiseaza toate camerele" << endl;
                     cout << "3. Adauga angajat" << endl;
@@ -169,15 +183,9 @@ int main()
                     cout << "5. Vizualizare incasari" << endl;
                     cout << "6. Statistici privind gradul de ocupare" << endl;
                     cout << "7. Schimba login sau parola" << endl;
+                    setColor(8);
                     cout << "0. Inapoi la meniul principal" << endl;
-                    cout << "Alege o optiune: ";
-
-                    cin >> optiuneAdministrator;
-                    while(cin.fail() || optiuneAdministrator < 0 || optiuneAdministrator > 7) {
-                        cout << "Optiune invalida. Introduceti un numar intre 0 si 7: ";
-                        cin.clear();
-                        cin >> optiuneAdministrator;
-                    }
+                    optiuneAdministrator = hotel.validareNumar("Alege o optiune: ");
 
                     switch (optiuneAdministrator) {
                         case 1:

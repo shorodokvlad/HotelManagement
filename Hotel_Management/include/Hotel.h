@@ -34,6 +34,7 @@ public:
     int calculeazaNrNopti(const Data& checkIn, const Data& checkOut);
     double calculeazaPretTotal(int nrNopti, double pretNoapte);
     void adaugaClient();
+    int validareNumar(const string& mesaj);
     void adaugaCamera();
     void incarcaDate();
     void salveazaDate();

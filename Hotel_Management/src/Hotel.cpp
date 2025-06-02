@@ -3,8 +3,13 @@
 #include <iomanip>
 #include <filesystem>
 #include <conio.h>
+#include <windows.h>
 
 using namespace std;
+
+void setColorHotel(int color) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
 
 int Hotel::nextClientId = 1;
 int Hotel::nextRezervareId = 1;
@@ -39,6 +44,7 @@ double Hotel::calculeazaPretTotal(int nrNopti, double pretNoapte) {
 
 Data Hotel::citesteData() {
     Data data;
+    setColorHotel(14);
     cin >> data;
     return data;
 }
@@ -49,7 +55,8 @@ void Hotel::adaugaClient() {
 
     for (const auto& c : clienti) {
         if (c.getCNP() == client.getCNP()) {
-            cout << "Eroare: Exista deja un client cu acest CNP. ID: " << c.getIdClient() << endl;
+            setColorHotel(12);
+            cout << "\nEroare: Exista deja un client cu acest CNP. ID: " << c.getIdClient() << endl;
             return;
         }
     }
@@ -57,7 +64,36 @@ void Hotel::adaugaClient() {
     client.setIdClient(nextClientId++);
     clienti.push_back(client);
     salveazaDate();
-    cout << "Client adaugat cu succes! ID: " << client.getIdClient() << endl;
+
+    setColorHotel(10);
+    cout << "\nClient adaugat cu succes! ID: " << client.getIdClient() << endl;
+}
+
+int Hotel::validareNumar(const string& mesaj) {
+    string input;
+    bool valid = false;
+
+    while (!valid) {
+        setColorHotel(8);
+        cout << mesaj;
+        setColorHotel(14);
+        cin >> input;
+
+        valid = true;
+        for (char c : input) {
+            if (!isdigit(c)) {
+                valid = false;
+                break;
+            }
+        }
+
+        if (!valid) {
+            setColorHotel(12);
+            cout << "\nEroare: Trebuie sa introduceti un numar!\n";
+        }
+    }
+
+    return stoi(input);
 }
 
 Client* Hotel::getClientDupaId(int id) {
@@ -98,13 +134,15 @@ void Hotel::adaugaCamera() {
 
     camere.push_back(camera);
     salveazaDate();
-    cout << "Camera adaugata cu succes!" << endl;
+    setColorHotel(10);
+    cout << "\nCamera adaugata cu succes!" << endl;
 }
 
 void Hotel::incarcaClienti() {
     ifstream file("data/Clienti.txt");
     if (!file.is_open()) {
-        cerr << "Eroare la deschiderea Clienti.txt" << endl;
+        setColorHotel(12);
+        cerr << "\nEroare la deschiderea Clienti.txt" << endl;
         return;
     }
     string line;
@@ -130,7 +168,7 @@ void Hotel::incarcaClienti() {
 void Hotel::incarcaCamere() {
     ifstream file("data/Camere.txt");
     if (!file.is_open()) {
-        cerr << "Eroare la deschiderea Camere.txt" << endl;
+        cerr << "\nEroare la deschiderea Camere.txt" << endl;
         return;
     }
     string line;
@@ -164,7 +202,7 @@ void Hotel::incarcaCamere() {
 void Hotel::incarcaRezervari() {
     ifstream file("data/Rezervari.txt");
     if (!file.is_open()) {
-        cerr << "Eroare la deschiderea Rezervari.txt" << endl;
+        cerr << "\nEroare la deschiderea Rezervari.txt" << endl;
         return;
     }
     string line;
@@ -210,7 +248,7 @@ void Hotel::incarcaRezervari() {
 void Hotel::salveazaClienti() {
     ofstream file("data/Clienti.txt");
     if (!file.is_open()) {
-        cerr << "Eroare la deschiderea Clienti.txt" << endl;
+        cerr << "\nEroare la deschiderea Clienti.txt" << endl;
         return;
     }
     for (const auto& client : clienti) {
@@ -223,7 +261,7 @@ void Hotel::salveazaClienti() {
 void Hotel::salveazaCamere() {
     ofstream file("data/Camere.txt");
     if (!file.is_open()) {
-        cerr << "Eroare la deschiderea Camere.txt" << endl;
+        cerr << "\nEroare la deschiderea Camere.txt" << endl;
         return;
     }
     for (const auto& room : camere) {
@@ -237,7 +275,7 @@ void Hotel::salveazaCamere() {
 void Hotel::salveazaRezervari() {
     ofstream file("data/Rezervari.txt");
     if (!file.is_open()) {
-        cerr << "Eroare la deschiderea Rezervari.txt" << endl;
+        cerr << "\nEroare la deschiderea Rezervari.txt" << endl;
         return;
     }
     for (const auto& res : rezervari) {
@@ -270,7 +308,7 @@ void Hotel::salveazaDate() {
 
 void Hotel::afiseazaClienti() {
     if (clienti.empty()) {
-        cout << "Nu exista clienti inregistrati." << endl;
+        cout << "\nNu exista clienti inregistrati." << endl;
         return;
     }
 
@@ -286,11 +324,13 @@ void Hotel::afiseazaClienti() {
         int end = min(start + clientiPePagina, (int)clienti.size());
 
         // Antet
+        setColorHotel(3);
         cout << left << setw(6) << "ID" << setw(15) << "Prenume" << setw(15) << "Nume"
              << setw(20) << "CNP" << setw(15) << "Telefon" << endl;
         cout << string(71, '-') << endl;
 
         // Afișare clienți
+        setColorHotel(8);
         for (int i = start; i < end; ++i) {
             const auto& client = clienti[i];
             cout << left << setw(6) << client.getIdClient()
@@ -301,6 +341,7 @@ void Hotel::afiseazaClienti() {
         }
 
         // Bara de paginare
+        setColorHotel(7);
         cout << "\nNavigare: ";
         if (paginaCurenta > 1) cout << "< ";
         for (int i = 1; i <= totalPagini; ++i) {
@@ -334,9 +375,11 @@ void Hotel::afiseazaToateCamerele() {
         cout << "Nu exista camere inregistrate." << endl;
         return;
     }
+    setColorHotel(14);
     cout << left << setw(8) << "Numar" << setw(12) << "Tip" << setw(14) << "Pret/noapte" << setw(8) << "WiFi" << setw(6) << "TV" << setw(9) << "Minibar" << setw(10) << "AerCond." << endl;
     cout << string(65, '-') << endl;
     for (const auto& room : camere) {
+        setColorHotel(8);
         cout << left << setw(8) << room.getNumarCamera()
              << setw(12) << room.getTipCamera()
              << setw(14) << room.getPretNoapte()
@@ -348,25 +391,33 @@ void Hotel::afiseazaToateCamerele() {
 }
 
 void Hotel::afiseazaCamereLibere() {
+    setColorHotel(8);
     cout << "Introduceti data de inceput (DD.MM.YYYY): ";
+    setColorHotel(14);
     Data startData = citesteData();
+    setColorHotel(8);
     cout << "Introduceti data de sfarsit (DD.MM.YYYY): ";
+    setColorHotel(14);
     Data endData = citesteData();
 
     if (!startData.esteValida() || !endData.esteValida() || !(startData < endData)) {
+        setColorHotel(12);
         cout << "Eroare: Interval de date invalid." << endl;
         return;
     }
 
     system("cls");
     bool found = false;
+    setColorHotel(3);
     cout << "Camere libere in perioada " << startData.toString() << " - " << endData.toString() << ":" << endl;
     cout << "\n";
+    setColorHotel(14);
     cout << left << setw(8) << "Numar" << setw(12) << "Tip" << setw(14) << "Pret/noapte" << setw(8) << "WiFi" << setw(6) << "TV" << setw(9) << "Minibar" << setw(10) << "AerCond." << endl;
     cout << string(67, '-') << endl;
 
     for (const auto& room : camere) {
         if (!areRezervareSuprapusa(room.getNumarCamera(), startData, endData)) {
+            setColorHotel(8);
             cout << left << setw(8) << room.getNumarCamera()
                  << setw(12) << room.getTipCamera()
                  << setw(14) << room.getPretNoapte()
@@ -379,30 +430,39 @@ void Hotel::afiseazaCamereLibere() {
     }
 
     if (!found) {
+        setColorHotel(12);
         cout << "Nu exista camere libere in perioada specificata." << endl;
     }
 }
 
 void Hotel::afiseazaCamereOcupate() {
+    setColorHotel(8);
     cout << "Introduceti data de inceput (DD.MM.YYYY): ";
+    setColorHotel(14);
     Data startData = citesteData();
+    setColorHotel(8);
     cout << "Introduceti data de sfarsit (DD.MM.YYYY): ";
+    setColorHotel(14);
     Data endData = citesteData();
 
     if (!startData.esteValida() || !endData.esteValida() || !(startData < endData)) {
+        setColorHotel(12);
         cout << "Eroare: Interval de date invalid." << endl;
         return;
     }
 
     system("cls");
     bool found = false;
+    setColorHotel(3);
     cout << "Camere ocupate in perioada " << startData.toString() << " - " << endData.toString() << ":" << endl;
     cout << "\n";
+    setColorHotel(14);
     cout << left << setw(8) << "Numar" << setw(12) << "Tip" << setw(14) << "Pret/noapte" << setw(8) << "WiFi" << setw(6) << "TV" << setw(9) << "Minibar" << setw(10) << "AerCond." << endl;
     cout << string(67, '-') << endl;
 
     for (const auto& camera : camere) {
         if (areRezervareSuprapusa(camera.getNumarCamera(), startData, endData)) {
+            setColorHotel(8);
             cout << left << setw(8) << camera.getNumarCamera()
                  << setw(12) << camera.getTipCamera()
                  << setw(14) << camera.getPretNoapte()
@@ -415,46 +475,57 @@ void Hotel::afiseazaCamereOcupate() {
     }
 
     if (!found) {
-        cout << "Nu exista camere ocupate in perioada specificata." << endl;
+        setColorHotel(12);
+        cout << "\nNu exista camere ocupate in perioada specificata." << endl;
     }
 }
 
 void Hotel::adaugaRezervare() {
-    int clientId, numarCamera;
-    cout << "Introduceti ID-ul clientului: ";
-    cin >> clientId;
-    getchar();
+
+    int clientId = validareNumar("Introduceti ID-ul clientului: ");
 
     if (!getClientDupaId(clientId)) {
+        setColorHotel(12);
         cout << "Eroare: Clientul cu ID-ul " << clientId << " nu exista." << endl;
         return;
     }
 
-    cout << "Introduceti numarul camerei: ";
-    cin >> numarCamera;
-    getchar();
+    if (!getClientDupaId(clientId)) {
+        setColorHotel(12);
+        cout << "Eroare: Clientul cu ID-ul " << clientId << " nu exista." << endl;
+        return;
+    }
+
+    int numarCamera = validareNumar("Introduceti numarul camerei: ");
 
     Camera* camera = getCameraDupaNumar(numarCamera);
     if (!camera) {
+        setColorHotel(12);
         cout << "Eroare: Camera cu numarul " << numarCamera << " nu exista." << endl;
         return;
     }
 
+    setColorHotel(8);
     cout << "Introduceti data de check-in (DD.MM.YYYY): ";
     Data checkIn = citesteData();
     if (!checkIn.esteValida()) {
+        setColorHotel(12);
         cout << "Eroare: Data de check-in invalida." << endl;
         return;
     }
+
     Data dataCurenta = Data::getDataCurenta();
     if (checkIn < dataCurenta) {
+        setColorHotel(12);
         cout << "Eroare: Data de check-in nu poate fi in trecut." << endl;
         return;
     }
 
+    setColorHotel(8);
     cout << "Introduceti data de check-out (DD.MM.YYYY): ";
     Data checkOut = citesteData();
     if (!checkOut.esteValida()) {
+        setColorHotel(12);
         cout << "Eroare: Data de check-out invalida." << endl;
         return;
     }
@@ -463,25 +534,31 @@ void Hotel::adaugaRezervare() {
         if (rezervare.getIdClient() == clientId &&
             rezervare.getStare() != StareRezervare::Anulata &&
             rezervare.getStare() != StareRezervare::CheckOut) {
+            setColorHotel(12);
             cout << "Eroare: Clientul cu ID-ul " << clientId << " are deja o rezervare activa cu ID-ul " << rezervare.getIdRezervare() << "." << endl;
             return;
         }
     }
 
     if (!(checkIn < checkOut)) {
+        setColorHotel(12);
         cout << "Eroare: Data de check-in trebuie sa fie inainte de data de check-out." << endl;
         return;
     }
     if (areRezervareSuprapusa(numarCamera, checkIn, checkOut)) {
+        setColorHotel(12);
         cout << "Eroare: Camera este ocupata in perioada selectata." << endl;
         return;
     }
     int nrNopti = calculeazaNrNopti(checkIn, checkOut);
     double pretTotal = calculeazaPretTotal(nrNopti, camera->getPretNoapte());
+
     rezervari.emplace_back(nextRezervareId++, clientId, numarCamera, checkIn, checkOut, StareRezervare::InAsteptare, nrNopti, pretTotal);
     camera->setOcupata(true);
     salveazaDate();
-    cout << "Rezervare adaugata cu succes! ID: " << rezervari.back().getIdRezervare() << endl;
+
+    setColorHotel(10);
+    cout << "\nRezervare adaugata cu succes! ID: " << rezervari.back().getIdRezervare() << endl;
 }
 
 void Hotel::afiseazaRezervari() {
@@ -490,12 +567,16 @@ void Hotel::afiseazaRezervari() {
                                "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"};
 
     cout << "Vizualizare rezervari pe luni: \n";
+    setColorHotel(3);
     cout << "1. Ianuarie\n2. Februarie\n3. Martie\n4. Aprilie\n5. Mai\n6. Iunie\n"
          << "7. Iulie\n8. August\n9. Septembrie\n10. Octombrie\n11. Noiembrie\n12. Decembrie\n";
+    setColorHotel(8);
     cout << "Introduceti luna (1-12): ";
+    setColorHotel(14);
     cin >> lunaSelectata;
 
     if (lunaSelectata < 1 || lunaSelectata > 12) {
+        setColorHotel(12);
         cout << "Luna invalida! Va rugam introduceti o valoare intre 1 si 12." << endl;
         return;
     }
@@ -509,6 +590,7 @@ void Hotel::afiseazaRezervari() {
 
     if (rezervariFiltrate.empty()) {
         system("cls");
+        setColorHotel(12);
         cout << "Nu exista rezervari inregistrate pentru luna selectata." << endl;
         return;
     }
@@ -522,11 +604,13 @@ void Hotel::afiseazaRezervari() {
     do {
         system("cls");
 
+        setColorHotel(3);
         cout << string(46, '-');
         cout << "Rezervari " << numeLuni[lunaSelectata] <<" " << dataCurenta.getAn();
         cout << string(46, '-') << "\n\n";
 
         // Antet tabel
+        setColorHotel(14);
         cout << left << setw(6) << "ID" << setw(8) << "Camera" << setw(12) << "ID Client"
              << setw(12) << "Prenume" << setw(12) << "Nume" << setw(12) << "Check-In"
              << setw(12) << "Check-Out" << setw(15) << "Stare" << setw(8) << "Nopti"
@@ -548,6 +632,7 @@ void Hotel::afiseazaRezervari() {
                 }
             }
 
+            setColorHotel(8);
             cout << left
                  << setw(6) << res.getIdRezervare()
                  << setw(8) << res.getIdCamera()
@@ -563,6 +648,7 @@ void Hotel::afiseazaRezervari() {
         }
 
         // Navigare pagini
+        setColorHotel(7);
         cout << "\nNavigare: ";
         if (paginaCurenta > 1) cout << "< ";
         for (int i = 1; i <= totalPagini; ++i) {
@@ -591,9 +677,7 @@ void Hotel::afiseazaRezervari() {
 }
 
 void Hotel::modificaStareRezervare(StareRezervare nouaStare) {
-    int idRezervare;
-    cout << "Introduceti ID-ul rezervarii: ";
-    cin >> idRezervare;
+    int idRezervare = validareNumar("Introduceti ID-ul rezervarii: ");
 
     for (auto& rezervare : rezervari) {
         if (rezervare.getIdRezervare() == idRezervare) {
@@ -602,9 +686,11 @@ void Hotel::modificaStareRezervare(StareRezervare nouaStare) {
                     if (rezervare.getStare() == StareRezervare::InAsteptare) {
                         rezervare.setStare(StareRezervare::Confirmata);
                         salveazaDate();
-                        cout << "Rezervare confirmata cu succes!" << endl;
+                        setColorHotel(10);
+                        cout << "\nRezervare confirmata cu succes!" << endl;
                     } else {
-                        cout << "Rezervarea nu este in starea: In Asteptare." << endl;
+                        setColorHotel(12);
+                        cout << "\nRezervarea nu este in starea: In Asteptare." << endl;
                     }
                     break;
                 case StareRezervare::Anulata:
@@ -625,9 +711,11 @@ void Hotel::modificaStareRezervare(StareRezervare nouaStare) {
                             }
                         }
                         salveazaDate();
-                        cout << "Rezervare anulata cu succes!" << endl;
+                        setColorHotel(10);
+                        cout << "\nRezervare anulata cu succes!" << endl;
                     } else {
-                        cout << "Rezervarea este deja anulata sau finalizata." << endl;
+                        setColorHotel(12);
+                        cout << "\nRezervarea este deja anulata sau finalizata." << endl;
                     }
                     break;
                 case StareRezervare::CheckIn:
@@ -638,12 +726,15 @@ void Hotel::modificaStareRezervare(StareRezervare nouaStare) {
                             rezervare.getCheckIn().getAn() == dataCurenta.getAn()) {
                             rezervare.setStare(StareRezervare::CheckIn);
                             salveazaDate();
-                            cout << "Check-in realizat cu succes!" << endl;
+                            setColorHotel(10);
+                            cout << "\nCheck-in realizat cu succes!" << endl;
                         } else {
-                            cout << "Eroare: Check-in-ul se poate realiza doar in data de check-in specificata (" << rezervare.getCheckIn().toString() << ")." << endl;
+                            setColorHotel(12);
+                            cout << "\nEroare: Check-in-ul se poate realiza doar in data de check-in specificata (" << rezervare.getCheckIn().toString() << ")." << endl;
                         }
                     } else {
-                        cout << "Rezervarea nu este in stare Confirmata." << endl;
+                        setColorHotel(12);
+                        cout << "\nRezervarea nu este in stare Confirmata." << endl;
                     }
                     break;
                 case StareRezervare::CheckOut:
@@ -668,67 +759,76 @@ void Hotel::modificaStareRezervare(StareRezervare nouaStare) {
                                 }
                             }
                             salveazaDate();
-                            cout << "Check-out realizat cu succes!" << endl;
+                            setColorHotel(10);
+                            cout << "\nCheck-out realizat cu succes!" << endl;
                         } else {
-                            cout << "Eroare: Check-out-ul se poate realiza doar in data de check-out specificata (" << rezervare.getCheckOut().toString() << ")." << endl;
+                            setColorHotel(12);
+                            cout << "\nEroare: Check-out-ul se poate realiza doar in data de check-out specificata (" << rezervare.getCheckOut().toString() << ")." << endl;
                         }
                     } else {
-                        cout << "Rezervarea nu este in stare CheckIn." << endl;
+                        setColorHotel(12);
+                        cout << "\nRezervarea nu este in stare CheckIn." << endl;
                     }
                     break;
                 default:
+                    setColorHotel(12);
                     cout << "Stare invalida." << endl;
                     break;
             }
             return;
         }
     }
-    cout << "Rezervare cu ID-ul " << idRezervare << " nu a fost gasita." << endl;
+    setColorHotel(12);
+    cout << "\nRezervare cu ID-ul " << idRezervare << " nu a fost gasita." << endl;
 }
 
 void Hotel::modificaRezervare() {
-    cout << "\nModificare rezervare." << endl;
-    int idRezervare, idClient, numarCamera;
-    cout << "Introduceti ID-ul rezervarii de modificat: ";
-    cin >> idRezervare;
-    getchar();
-    cout << "Introduceti ID-ul clientului: ";
-    cin >> idClient;
-    getchar();
-    cout << "Introduceti numarul camerei: ";
-    cin >> numarCamera;
-    getchar();
+
+    int idRezervare = validareNumar("Introduceti ID-ul rezervarii de modificat: ");
+    int idClient = validareNumar("Introduceti ID-ul clientului: ");
+    int numarCamera = validareNumar("Introduceti numarul camerei: ");
+
+    setColorHotel(8);
     cout << "Introduceti data de check-in (DD.MM.YYYY): ";
+    setColorHotel(14);
     Data checkIn = citesteData();
+
+    setColorHotel(8);
     cout << "Introduceti data de check-out (DD.MM.YYYY): ";
+    setColorHotel(8);
     Data checkOut = citesteData();
 
     for (auto& rezervare : rezervari) {
         if (rezervare.getIdRezervare() == idRezervare) {
             if (rezervare.getStare() != StareRezervare::InAsteptare && rezervare.getStare() != StareRezervare::Confirmata) {
-                cout << "Eroare: Rezervarea nu poate fi modificata." << endl;
+                setColorHotel(12);
+                cout << "\nEroare: Rezervarea nu poate fi modificata." << endl;
                 return;
             }
 
             Client* client = getClientDupaId(idClient);
             if (!client) {
-                cout << "Eroare: Clientul cu ID " << idClient << " nu exista." << endl;
+                setColorHotel(12);
+                cout << "\nEroare: Clientul cu ID " << idClient << " nu exista." << endl;
                 return;
             }
 
             Camera* camera = getCameraDupaNumar(numarCamera);
             if (!camera) {
-                cout << "Eroare: Camera cu numarul " << numarCamera << " nu exista." << endl;
+                setColorHotel(12);
+                cout << "\nEroare: Camera cu numarul " << numarCamera << " nu exista." << endl;
                 return;
             }
 
             if (!checkIn.esteValida() || !checkOut.esteValida()) {
-                cout << "Eroare: Datele de check-in sau check-out nu sunt valide." << endl;
+                setColorHotel(12);
+                cout << "\nEroare: Datele de check-in sau check-out nu sunt valide." << endl;
                 return;
             }
 
             if (!(checkIn < checkOut)) {
-                cout << "Eroare: Data de check-out trebuie sa fie mai mare decat data de check-in." << endl;
+                setColorHotel(12);
+                cout << "\nEroare: Data de check-out trebuie sa fie mai mare decat data de check-in." << endl;
                 return;
             }
 
@@ -738,7 +838,8 @@ void Hotel::modificaRezervare() {
                     altaRezervare.getStare() != StareRezervare::Anulata &&
                     altaRezervare.getStare() != StareRezervare::CheckOut) {
                     if (checkIn < altaRezervare.getCheckOut() && altaRezervare.getCheckIn() < checkOut) {
-                        cout << "Eroare: Camera este deja rezervata in acest interval." << endl;
+                        setColorHotel(12);
+                        cout << "\nEroare: Camera este deja rezervata in acest interval." << endl;
                         return;
                     }
                 }
@@ -755,9 +856,11 @@ void Hotel::modificaRezervare() {
             rezervare.setPretTotal(pretTotal);
 
             salveazaDate();
-            cout << "Rezervarea " << idRezervare << " a fost modificata cu succes!" << endl;
+            setColorHotel(10);
+            cout << "\nRezervarea " << idRezervare << " a fost modificata cu succes!" << endl;
             return;
         }
     }
-    cout << "Eroare: Rezervarea cu ID " << idRezervare << " nu a fost gasita." << endl;
+    setColorHotel(10);
+    cout << "\nEroare: Rezervarea cu ID " << idRezervare << " nu a fost gasita." << endl;
 }

@@ -1,6 +1,11 @@
 #include "Client.h"
+#include <windows.h>
 
 using namespace std;
+
+void setColorClient(int color) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
 
 Client::Client() : Persoana(), idClient(0), telefon("") {}
 
@@ -16,12 +21,14 @@ void Client::setTelefon(const string& _telefon) { telefon = _telefon; }
 bool Client::validareTelefon(const string& telefon) {
     for (char c : telefon) if (!isdigit(c))
     {
+        setColorClient(12);
         cout << "Numarul de telefon trebuie sa contina numai cifre!\n";
         return false;
     }
 
     if (telefon.length() != 10)
     {
+        setColorClient(12);
         cout << "Numarul de telefon trebuie sa contina 10 cifre!\n";
         return false;
     }
@@ -42,7 +49,9 @@ ostream& operator<<(ostream& out, const Client& client) {
 istream& operator>>(istream& in, Client& client) {
     in >> (Persoana&)client;
     do {
-        cout << "Telefon (10 cifre): ";
+        setColorClient(8);
+        cout << "Telefon: ";
+        setColorClient(14);
         in >> client.telefon;
     } while (!Client::validareTelefon(client.telefon));
     return in;

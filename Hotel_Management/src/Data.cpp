@@ -2,11 +2,16 @@
 #include <string>
 #include <iostream>
 #include <ctime>
+#include <windows.h>
 
 using namespace std;
 
+void setColorData(int color) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
 
 Data::Data(int _zi, int _luna, int _an) : zi(_zi), luna(_luna), an(_an) {}
+
 
 bool Data::esteValida() const {
     if (luna < 1 || luna > 12) return false;
@@ -37,13 +42,18 @@ ostream& operator<<(ostream& out, const Data& data) {
 
 istream& operator>>(istream& in, Data& data) {
     string input;
+    setColorData(14);
     in >> input;
 
     if (input.length() != 10 || input[2] != '.' || input[5] != '.' ||
         !isdigit(input[0]) || !isdigit(input[1]) ||
         !isdigit(input[3]) || !isdigit(input[4]) ||
         !isdigit(input[6]) || !isdigit(input[7]) || !isdigit(input[8]) || !isdigit(input[9])) {
-        cout << "Eroare: Formatul trebuie sa fie DD.MM.YYYY!" << endl;
+
+        setColorData(12);
+        cout << "\nEroare: Formatul trebuie sa fie DD.MM.YYYY!" << endl;
+
+        data.zi = data.luna = data.an = 0;
         return in;
     }
 
@@ -57,6 +67,7 @@ istream& operator>>(istream& in, Data& data) {
 
     return in;
 }
+
 
 int Data::getZileInLuna(int luna, int an) {
     if (luna < 1 || luna > 12 || an < 0) {

@@ -32,6 +32,8 @@ public:
 
     string toString() const override;
 
+    static bool validareSalariu(const string& input, double& salariuOut);
+
     friend ostream& operator<<(ostream& out, const Angajat& angajat);
     friend istream& operator>>(istream& in, Angajat& angajat);
 };
